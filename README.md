@@ -19,13 +19,13 @@ Este repositório contém o código fonte do backend do sistema "ifome", uma sin
 Clone o repositório
 
 ```bash
-  git clone https://gitlab.com/rm-sys/ifood-backend.git
+  git clone https://github.com/Arthurlevicoelho/api-clone-ifood.git
 ```
 
 Vá para o diretório do projeto
 
 ```bash
-  cd ifood-backend
+  cd api-clone-ifood
 ```
 
 Crie um arquivo .env e insira as variáveis de ambiente de acordo com o .env.example
