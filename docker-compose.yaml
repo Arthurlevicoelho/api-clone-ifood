@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: ifood-backend
+
+    restart: always
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+      SPRING_DATASOURCE_HIKARI_CONNECTIONTIMEOUT: ${HIKARI_CONNECTION_TIMEOUT}
+      SPRING_DATASOURCE_HIKARI_IDLETIMEOUT: ${HIKARI_IDLE_TIMEOUT}
+      SPRING_DATASOURCE_HIKARI_MAXLIFETIME: ${HIKARI_MAX_LIFETIME}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${HIKARI_MAXIMUM_POOL_SIZE}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${HIKARI_MINIMUM_IDLE}
+
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+
+      SERVER_PORT: 8080
+
+    deploy:
+      resources:
+        limits:
+          memory: 510m
+          cpus: '0.1'
+
+volumes:
+  logs:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
