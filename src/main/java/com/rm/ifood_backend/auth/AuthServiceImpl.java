@@ -11,6 +11,7 @@ import com.rm.ifood_backend.repository.RestaurantRepository;
 import com.rm.ifood_backend.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +74,7 @@ public class AuthServiceImpl implements AuthService{
         Client client = clientRepository.findByEmail(email)
             .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado"));
         if (!passwordEncoder.matches(rawPassword, client.getPassword())){
-          throw new RuntimeException("Credenciais inválidas");
+          throw new BadCredentialsException("Credenciais inválidas");
         }
         return jwtUtil.generateToken(client.getEmail());
       }
@@ -81,7 +82,7 @@ public class AuthServiceImpl implements AuthService{
         Restaurant restaurant = restaurantRepository.findByEmail(email)
             .orElseThrow(() -> new EntityNotFoundException("Restaurante não encontrado"));
         if (!passwordEncoder.matches(rawPassword, restaurant.getPassword())) {
-          throw new RuntimeException("Invalid credentials");
+          throw new BadCredentialsException("Credenciais inválidas");
         }
         return jwtUtil.generateToken(restaurant.getEmail());
       }

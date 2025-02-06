@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -13,8 +14,10 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-  private final String SECRET_KEY = "test-key-test-key-test-key-test-key";
-  private final long EXPIRATION_TIME = 86400000; // 24 horas em milissegundos
+  @Value("${SECRET_KEY}")
+  private String SECRET_KEY;
+
+  private final long EXPIRATION_TIME = 86400000;
 
   private Key getSigningKey() {
     return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
@@ -46,7 +49,6 @@ public class JwtUtil {
           .parseClaimsJws(token);
       return true;
     } catch (JwtException e) {
-      System.out.println("Token inválido: " + e.getMessage());
       return false;
     }
   }

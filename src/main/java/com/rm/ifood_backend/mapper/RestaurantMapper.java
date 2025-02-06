@@ -51,7 +51,7 @@ public interface RestaurantMapper {
         .id(product.getId())
         .restaurant_id(
             product.getRestaurant() != null ?
-                product.getRestaurant().getId() : null // Handle null restaurant
+                product.getRestaurant().getId() : null
         )
         .name(product.getName())
         .price(product.getPrice())

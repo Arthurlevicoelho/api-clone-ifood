@@ -1,9 +1,11 @@
 package com.rm.ifood_backend.exceptions;
 
+import com.rm.ifood_backend.util.ResponseBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,27 +18,19 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  private ResponseEntity<Map<String, Object>> buildError(HttpStatus status, String message) {
-    Map<String, Object> errorMap = new HashMap<>();
-    errorMap.put("status", status.value());
-    errorMap.put("error", status.getReasonPhrase());
-    errorMap.put("message", message);
-    return new ResponseEntity<>(errorMap, status);
-  }
-
   @ExceptionHandler(EntityNotFoundException.class)
   private ResponseEntity<Map<String, Object>> entityNotFoundHandler(EntityNotFoundException exception) {
-    return buildError(HttpStatus.NOT_FOUND, exception.getMessage());
+    return ResponseBuilder.builder(HttpStatus.NOT_FOUND, exception.getMessage(), null);
   }
 
   @ExceptionHandler(Exception.class)
   private ResponseEntity<Map<String, Object>> internalServerErrorHandler(Exception exception) {
-    return buildError(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+    return ResponseBuilder.builder(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), null);
   }
 
   @ExceptionHandler(BadRequestException.class)
   private ResponseEntity<Map<String, Object>> badRequestErrorHandler(BadRequestException exception) {
-    return buildError(HttpStatus.BAD_REQUEST, exception.getMessage());
+    return ResponseBuilder.builder(HttpStatus.BAD_REQUEST, exception.getMessage(), null);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,6 +39,11 @@ public class GlobalExceptionHandler {
         .map(error -> error.getField() + ": " + error.getDefaultMessage())
         .collect(Collectors.toList());
 
-    return buildError(HttpStatus.UNPROCESSABLE_ENTITY, String.join("; ", errors));
+    return ResponseBuilder.builder(HttpStatus.UNPROCESSABLE_ENTITY, String.join("; ", errors), null);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  private ResponseEntity<Map<String, Object>> unauthorizedExceptionHandler(AuthenticationException exception){
+    return ResponseBuilder.builder(HttpStatus.UNAUTHORIZED, exception.getMessage(), null);
   }
 }

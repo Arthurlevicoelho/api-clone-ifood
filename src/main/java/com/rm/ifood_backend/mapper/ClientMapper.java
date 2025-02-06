@@ -20,7 +20,6 @@ import java.util.List;
 @Mapper
 public interface ClientMapper {
 
-
   ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
 
   @Mapping(target = "orders", ignore = true)
@@ -30,7 +29,7 @@ public interface ClientMapper {
   Client toEntityFromUpdateDto(UpdateClientDTO updateClientDTO);
 
   @Mapping(source = "orders", target = "orders", qualifiedByName = "mapOrdersToDto")
-  ClientResponseDTO toResponseDTO(Client client);  // Corrected method signature
+  ClientResponseDTO toResponseDTO(Client client);
 
   @Named("mapOrdersFromDto")
   default List<Order> mapOrdersFromDto(List<OrderDTO> orderDTOs) {
@@ -64,7 +63,7 @@ public interface ClientMapper {
             .id(order.getId())
             .restaurant_id(order.getRestaurant() != null ? order.getRestaurant().getId() : null)
             .client_id(order.getClient() != null ? order.getClient().getId() : null)
-            .products(mapProductsToDto(order.getProducts())) // Handle nested nulls
+            .products(mapProductsToDto(order.getProducts()))
             .total_price(order.getTotal_price())
             .status(order.getStatus())
             .build())

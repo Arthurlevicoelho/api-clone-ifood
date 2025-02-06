@@ -48,6 +48,7 @@ Crie um arquivo .env e insira as variáveis de ambiente de acordo com o .env.exa
 
 # HIKARI_MAXIMUM_POOL_SIZE=10
 # HIKARI_MINIMUM_IDLE=5
+# SECRET_KEY=very-secret-key
 ```
 
 Inicie o projeto com o maven

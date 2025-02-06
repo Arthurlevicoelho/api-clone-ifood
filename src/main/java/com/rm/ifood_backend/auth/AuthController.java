@@ -1,6 +1,6 @@
 package com.rm.ifood_backend.auth;
 
-import com.rm.ifood_backend.dto.JwtResponse;
+import com.rm.ifood_backend.dto.JwtResponseDTO;
 import com.rm.ifood_backend.dto.LoginDTO;
 import com.rm.ifood_backend.dto.client.ClientSignupDTO;
 import com.rm.ifood_backend.dto.restaurant.RestaurantSignupDTO;
@@ -38,8 +38,8 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<JwtResponse> login(@RequestBody LoginDTO request) {
+  public ResponseEntity<JwtResponseDTO> login(@RequestBody LoginDTO request) {
     String token = authService.login(request);
-    return ResponseEntity.status(HttpStatus.CREATED).body(new JwtResponse(token));
+    return ResponseEntity.status(HttpStatus.CREATED).body(new JwtResponseDTO(token));
   }
 }

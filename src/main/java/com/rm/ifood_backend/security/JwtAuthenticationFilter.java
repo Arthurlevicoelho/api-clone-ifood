@@ -18,6 +18,8 @@ import java.util.List;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+  private final int TOKEN_INDEX = 7;
+
   @Autowired
   private JwtUtil jwtUtil;
 
@@ -38,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception e) {
-      throw new BadRequestException(e.getMessage());
+      throw new BadRequestException("Não foi Possivel gerar o token de autenticação, tente novamente");
     }
 
     filterChain.doFilter(request, response);
@@ -47,8 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private String parseJwt(HttpServletRequest request) {
     String headerAuth = request.getHeader("Authorization");
     if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-      String token = headerAuth.substring(7);
-      System.out.println("Token recebido: " + token);
+      String token = headerAuth.substring(TOKEN_INDEX);
       return token;
     }
     return null;
