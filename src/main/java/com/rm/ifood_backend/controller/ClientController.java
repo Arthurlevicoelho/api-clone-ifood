@@ -8,9 +8,11 @@ import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.ClientService;
 import com.rm.ifood_backend.mapper.ClientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
 @RequestMapping("/api/clients")
 public class ClientController extends BaseController<Client, CreateClientDTO, UpdateClientDTO, ClientResponseDTO> {

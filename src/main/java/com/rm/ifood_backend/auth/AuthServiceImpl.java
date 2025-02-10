@@ -8,32 +8,37 @@ import com.rm.ifood_backend.model.Client;
 import com.rm.ifood_backend.model.Restaurant;
 import com.rm.ifood_backend.repository.ClientRepository;
 import com.rm.ifood_backend.repository.RestaurantRepository;
+import com.rm.ifood_backend.service.ClientService;
 import com.rm.ifood_backend.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService{
 
+  @Autowired
+  private ClientService clientService;
+
   private final ClientRepository clientRepository;
 
   private final RestaurantRepository restaurantRepository;
 
-  private final BCryptPasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
   private final JwtUtil jwtUtil;
 
   @Autowired
   public AuthServiceImpl(ClientRepository clientRepository,
                          RestaurantRepository restaurantRepository,
-                         JwtUtil jwtUtil) {
+                         JwtUtil jwtUtil,
+                         PasswordEncoder passwordEncoder) {
     this.clientRepository = clientRepository;
     this.restaurantRepository = restaurantRepository;
     this.jwtUtil = jwtUtil;
-    this.passwordEncoder = new BCryptPasswordEncoder();
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override

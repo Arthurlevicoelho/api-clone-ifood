@@ -8,9 +8,11 @@ import com.rm.ifood_backend.model.Restaurant;
 import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
 @RequestMapping("/api/restaurants")
 public class RestaurantController extends BaseController<Restaurant, CreateRestaurantDTO, UpdateRestaurantDTO, RestaurantResponseDTO> {
@@ -39,4 +41,5 @@ public class RestaurantController extends BaseController<Restaurant, CreateResta
   protected BaseService<Restaurant> baseService() {
     return restaurantService;
   }
+
 }

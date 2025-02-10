@@ -8,9 +8,11 @@ import com.rm.ifood_backend.model.Product;
 import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
 @RequestMapping("/api/products")
 public class ProductController extends BaseController<Product, CreateProductDTO, UpdateProductDTO, ProductResponseDTO> {
