@@ -1,4 +1,4 @@
-package com.rm.ifood_backend.dto;
+package com.rm.ifood_backend.model;
 
 import com.rm.ifood_backend.enums.UserType;
 import jakarta.validation.constraints.Email;

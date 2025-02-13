@@ -1,7 +1,10 @@
-package com.rm.ifood_backend.model;
+package com.rm.ifood_backend.model.order;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rm.ifood_backend.enums.OrderStatus;
+import com.rm.ifood_backend.model.product.Product;
+import com.rm.ifood_backend.model.restaurant.Restaurant;
+import com.rm.ifood_backend.model.client.Client;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

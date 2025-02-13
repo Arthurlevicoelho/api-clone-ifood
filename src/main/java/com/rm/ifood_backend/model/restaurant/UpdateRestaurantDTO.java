@@ -1,8 +1,6 @@
-package com.rm.ifood_backend.dto.restaurant;
+package com.rm.ifood_backend.model.restaurant;
 
-import com.rm.ifood_backend.dto.product.ProductDTO;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
+import com.rm.ifood_backend.model.product.ProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.rm.ifood_backend.dto.product;
+package com.rm.ifood_backend.model.complement;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO {
+public class ComplementDTO {
+
   private UUID id;
-  private UUID restaurant_id;
   private String name;
-  private String description;
   private double price;
-  private boolean available;
 }

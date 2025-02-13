@@ -1,7 +1,7 @@
 package com.rm.ifood_backend;
 
-import com.rm.ifood_backend.model.Product;
-import com.rm.ifood_backend.model.Restaurant;
+import com.rm.ifood_backend.model.product.Product;
+import com.rm.ifood_backend.model.restaurant.Restaurant;
 import com.rm.ifood_backend.repository.ProductRepository;
 import com.rm.ifood_backend.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;

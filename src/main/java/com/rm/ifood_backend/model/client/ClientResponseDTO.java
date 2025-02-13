@@ -1,6 +1,6 @@
-package com.rm.ifood_backend.dto.client;
+package com.rm.ifood_backend.model.client;
 
-import com.rm.ifood_backend.dto.order.OrderDTO;
+import com.rm.ifood_backend.model.order.OrderDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

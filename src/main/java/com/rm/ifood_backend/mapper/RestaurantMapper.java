@@ -1,11 +1,13 @@
 package com.rm.ifood_backend.mapper;
 
-import com.rm.ifood_backend.dto.product.ProductDTO;
-import com.rm.ifood_backend.dto.restaurant.CreateRestaurantDTO;
-import com.rm.ifood_backend.dto.restaurant.RestaurantResponseDTO;
-import com.rm.ifood_backend.dto.restaurant.UpdateRestaurantDTO;
-import com.rm.ifood_backend.model.Product;
-import com.rm.ifood_backend.model.Restaurant;
+import com.rm.ifood_backend.model.complement.ComplementDTO;
+import com.rm.ifood_backend.model.product.ProductDTO;
+import com.rm.ifood_backend.model.product.Product;
+import com.rm.ifood_backend.model.complement.Complement;
+import com.rm.ifood_backend.model.restaurant.CreateRestaurantDTO;
+import com.rm.ifood_backend.model.restaurant.RestaurantResponseDTO;
+import com.rm.ifood_backend.model.restaurant.UpdateRestaurantDTO;
+import com.rm.ifood_backend.model.restaurant.Restaurant;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -13,6 +15,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(uses = {OrderMapper.class})
 public interface RestaurantMapper {
@@ -37,13 +40,17 @@ public interface RestaurantMapper {
     }
     return menu.stream()
         .map(this::toProductDto)
-        .toList();
+        .collect(Collectors.toList());
   }
-
 
   @Named("mapProductToEntity")
   default List<Product> mapProductEntity(List<ProductDTO> menuDto) {
-    return menuDto.stream().map(this::toProductEntity).toList();
+    if (menuDto == null) {
+      return new ArrayList<>();
+    }
+    return menuDto.stream()
+        .map(this::toProductEntity)
+        .collect(Collectors.toList());
   }
 
   default ProductDTO toProductDto(Product product) {
@@ -57,6 +64,7 @@ public interface RestaurantMapper {
         .price(product.getPrice())
         .description(product.getDescription())
         .available(product.isAvailable())
+        .complements(mapComplementsToDto(product.getComplements()))
         .build();
   }
 
@@ -67,6 +75,35 @@ public interface RestaurantMapper {
         .price(productDto.getPrice())
         .description(productDto.getDescription())
         .available(productDto.isAvailable())
+        .complements(mapComplementsFromDto(productDto.getComplements()))
         .build();
+  }
+
+  @Named("mapComplementsFromDto")
+  default List<Complement> mapComplementsFromDto(List<ComplementDTO> complementDTOS) {
+    if (complementDTOS == null) {
+      return new ArrayList<>();
+    }
+    return complementDTOS.stream()
+        .map(complementDTO -> Complement.builder()
+            .id(complementDTO.getId())
+            .name(complementDTO.getName())
+            .price(complementDTO.getPrice())
+            .build()).toList();
+  }
+
+
+  @Named("mapComplementsToDto")
+  default List<ComplementDTO> mapComplementsToDto(List<Complement> complements) {
+    if (complements == null) {
+      return new ArrayList<>();
+    }
+    return complements.stream()
+        .map(complement -> ComplementDTO.builder()
+            .id(complement.getId())
+            .name(complement.getName())
+            .price(complement.getPrice())
+            .build())
+        .collect(Collectors.toList());
   }
 }

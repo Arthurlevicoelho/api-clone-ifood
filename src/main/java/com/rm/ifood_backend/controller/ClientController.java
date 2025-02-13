@@ -1,9 +1,9 @@
 package com.rm.ifood_backend.controller;
 
-import com.rm.ifood_backend.dto.client.ClientResponseDTO;
-import com.rm.ifood_backend.dto.client.CreateClientDTO;
-import com.rm.ifood_backend.dto.client.UpdateClientDTO;
-import com.rm.ifood_backend.model.Client;
+import com.rm.ifood_backend.model.client.ClientResponseDTO;
+import com.rm.ifood_backend.model.client.CreateClientDTO;
+import com.rm.ifood_backend.model.client.UpdateClientDTO;
+import com.rm.ifood_backend.model.client.Client;
 import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.ClientService;
 import com.rm.ifood_backend.mapper.ClientMapper;

@@ -1,7 +1,7 @@
-package com.rm.ifood_backend.dto.restaurant;
+package com.rm.ifood_backend.model.restaurant;
 
-import com.rm.ifood_backend.dto.product.ProductDTO;
-import com.rm.ifood_backend.dto.order.OrderDTO;
+import com.rm.ifood_backend.model.product.ProductDTO;
+import com.rm.ifood_backend.model.order.OrderDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,10 +1,10 @@
 package com.rm.ifood_backend.auth;
 
-import com.rm.ifood_backend.dto.LoginDTO;
-import com.rm.ifood_backend.dto.client.ClientSignupDTO;
-import com.rm.ifood_backend.dto.restaurant.RestaurantSignupDTO;
-import com.rm.ifood_backend.model.Client;
-import com.rm.ifood_backend.model.Restaurant;
+import com.rm.ifood_backend.model.LoginDTO;
+import com.rm.ifood_backend.model.client.ClientSignupDTO;
+import com.rm.ifood_backend.model.restaurant.RestaurantSignupDTO;
+import com.rm.ifood_backend.model.client.Client;
+import com.rm.ifood_backend.model.restaurant.Restaurant;
 
 public interface AuthService {
   Client registerClient(ClientSignupDTO request);

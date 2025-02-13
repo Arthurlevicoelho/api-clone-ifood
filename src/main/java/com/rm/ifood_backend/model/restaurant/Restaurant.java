@@ -1,6 +1,8 @@
-package com.rm.ifood_backend.model;
+package com.rm.ifood_backend.model.restaurant;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.rm.ifood_backend.model.order.Order;
+import com.rm.ifood_backend.model.product.Product;
 import jakarta.persistence.*;
 
 import lombok.*;

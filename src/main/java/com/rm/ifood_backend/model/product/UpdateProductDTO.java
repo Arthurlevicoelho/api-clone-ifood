@@ -1,4 +1,4 @@
-package com.rm.ifood_backend.dto.product;
+package com.rm.ifood_backend.model.product;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateProductDTO {
+public class UpdateProductDTO {
+
+  private UUID id;
 
   @NotNull(message = "Id do restaurante não deve ser nulo")
   private UUID restaurant_id;
