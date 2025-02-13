@@ -1,6 +1,6 @@
 package com.rm.ifood_backend.service;
 
-import com.rm.ifood_backend.model.Restaurant;
+import com.rm.ifood_backend.model.restaurant.Restaurant;
 import com.rm.ifood_backend.repository.RestaurantRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

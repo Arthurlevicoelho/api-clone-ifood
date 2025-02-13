@@ -1,6 +1,6 @@
 package com.rm.ifood_backend.repository;
 
-import com.rm.ifood_backend.model.Client;
+import com.rm.ifood_backend.model.client.Client;
 
 import java.util.Optional;
 

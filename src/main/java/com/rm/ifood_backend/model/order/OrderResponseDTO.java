@@ -1,6 +1,6 @@
-package com.rm.ifood_backend.dto.order;
+package com.rm.ifood_backend.model.order;
 
-import com.rm.ifood_backend.dto.product.ProductDTO;
+import com.rm.ifood_backend.model.product.ProductDTO;
 import com.rm.ifood_backend.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

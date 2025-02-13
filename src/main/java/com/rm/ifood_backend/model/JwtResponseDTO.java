@@ -1,4 +1,4 @@
-package com.rm.ifood_backend.dto;
+package com.rm.ifood_backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,9 +1,9 @@
 package com.rm.ifood_backend.controller;
 
-import com.rm.ifood_backend.dto.order.CreateOrderDTO;
-import com.rm.ifood_backend.dto.order.OrderResponseDTO;
-import com.rm.ifood_backend.dto.order.UpdateOrderDTO;
-import com.rm.ifood_backend.model.Order;
+import com.rm.ifood_backend.model.order.CreateOrderDTO;
+import com.rm.ifood_backend.model.order.OrderResponseDTO;
+import com.rm.ifood_backend.model.order.UpdateOrderDTO;
+import com.rm.ifood_backend.model.order.Order;
 import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.OrderService;
 import com.rm.ifood_backend.mapper.OrderMapper;

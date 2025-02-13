@@ -1,10 +1,10 @@
 package com.rm.ifood_backend.controller;
 
-import com.rm.ifood_backend.dto.product.CreateProductDTO;
-import com.rm.ifood_backend.dto.product.ProductResponseDTO;
-import com.rm.ifood_backend.dto.product.UpdateProductDTO;
+import com.rm.ifood_backend.model.product.CreateProductDTO;
+import com.rm.ifood_backend.model.product.ProductResponseDTO;
+import com.rm.ifood_backend.model.product.UpdateProductDTO;
 import com.rm.ifood_backend.mapper.ProductMapper;
-import com.rm.ifood_backend.model.Product;
+import com.rm.ifood_backend.model.product.Product;
 import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,13 @@
-package com.rm.ifood_backend.dto.product;
+package com.rm.ifood_backend.model.product;
 
+import com.rm.ifood_backend.model.complement.ComplementDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -18,4 +21,5 @@ public class ProductResponseDTO {
   private String description;
   private double price;
   private boolean available;
+  private List<ComplementDTO> complements;
 }

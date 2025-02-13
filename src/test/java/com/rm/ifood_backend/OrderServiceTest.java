@@ -1,10 +1,10 @@
 package com.rm.ifood_backend;
 
 import com.rm.ifood_backend.enums.OrderStatus;
-import com.rm.ifood_backend.model.Client;
-import com.rm.ifood_backend.model.Product;
-import com.rm.ifood_backend.model.Order;
-import com.rm.ifood_backend.model.Restaurant;
+import com.rm.ifood_backend.model.client.Client;
+import com.rm.ifood_backend.model.product.Product;
+import com.rm.ifood_backend.model.order.Order;
+import com.rm.ifood_backend.model.restaurant.Restaurant;
 import com.rm.ifood_backend.repository.OrderRepository;
 import com.rm.ifood_backend.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;

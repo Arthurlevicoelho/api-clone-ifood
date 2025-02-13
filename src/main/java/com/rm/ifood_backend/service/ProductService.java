@@ -1,6 +1,6 @@
 package com.rm.ifood_backend.service;
 
-import com.rm.ifood_backend.model.Product;
+import com.rm.ifood_backend.model.product.Product;
 import com.rm.ifood_backend.repository.ProductRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
