@@ -41,14 +41,14 @@ public interface ClientMapper {
     }
     return orderDTOs.stream()
         .map(orderDTO -> Order.builder()
-            .id(orderDTO.getId())
-            .restaurant(Restaurant.builder().id(orderDTO.getRestaurant_id()).build())
-            .client(Client.builder().id(orderDTO.getClient_id()).build())
-            .products(orderDTO.getProducts().stream()
+            .id(orderDTO.id())
+            .restaurant(Restaurant.builder().id(orderDTO.restaurant_id()).build())
+            .client(Client.builder().id(orderDTO.client_id()).build())
+            .products(orderDTO.products().stream()
                 .map(this::toProductEntity)
                 .collect(Collectors.toList()))
-            .total_price(orderDTO.getTotal_price())
-            .status(orderDTO.getStatus())
+            .total_price(orderDTO.total_price())
+            .status(orderDTO.status())
             .build())
         .collect(Collectors.toList());
   }
@@ -59,14 +59,14 @@ public interface ClientMapper {
       return new ArrayList<>();
     }
     return orders.stream()
-        .map(order -> OrderDTO.builder()
-            .id(order.getId())
-            .restaurant_id(order.getRestaurant() != null ? order.getRestaurant().getId() : null)
-            .client_id(order.getClient() != null ? order.getClient().getId() : null)
-            .products(mapProductsToDto(order.getProducts()))
-            .total_price(order.getTotal_price())
-            .status(order.getStatus())
-            .build())
+        .map(order -> new OrderDTO(
+            order.getId(),
+            order.getClient().getId(),
+            order.getRestaurant().getId(),
+            mapProductsToDto(order.getProducts()),
+            order.getTotal_price(),
+            order.getStatus()
+        ))
         .collect(Collectors.toList());
   }
 
@@ -80,25 +80,26 @@ public interface ClientMapper {
   }
 
   private ProductDTO toProductDto(Product product) {
-    return ProductDTO.builder()
-        .id(product.getId())
-        .restaurant_id(product.getRestaurant() != null ? product.getRestaurant().getId() : null)
-        .name(product.getName())
-        .description(product.getDescription())
-        .price(product.getPrice())
-        .available(product.isAvailable())
-        .complements(mapComplementsToDto(product.getComplements()))
-        .build();
+    return new ProductDTO(
+        product.getId(),
+        product.getRestaurant().getId(),
+        product.getName(),
+        product.getDescription(),
+        product.getPrice(),
+        product.isAvailable(),
+        mapComplementsToDto(product.getComplements())
+    );
   }
+
 
   private Product toProductEntity(ProductDTO productDto) {
     return Product.builder()
-        .id(productDto.getId())
-        .name(productDto.getName())
-        .price(productDto.getPrice())
-        .description(productDto.getDescription())
-        .available(productDto.isAvailable())
-        .complements(mapComplementsFromDto(productDto.getComplements()))
+        .id(productDto.id())
+        .name(productDto.name())
+        .price(productDto.price())
+        .description(productDto.description())
+        .available(productDto.available())
+        .complements(mapComplementsFromDto(productDto.complements()))
         .build();
   }
 
@@ -109,9 +110,9 @@ public interface ClientMapper {
     }
     return complementDTOS.stream()
         .map(complementDTO -> Complement.builder()
-            .id(complementDTO.getId())
-            .name(complementDTO.getName())
-            .price(complementDTO.getPrice())
+            .id(complementDTO.id())
+            .name(complementDTO.name())
+            .price(complementDTO.price())
             .build()).toList();
   }
 

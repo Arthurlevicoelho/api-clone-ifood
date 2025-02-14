@@ -1,35 +1,26 @@
 package com.rm.ifood_backend.model.restaurant;
 
 import com.rm.ifood_backend.model.product.ProductDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class UpdateRestaurantDTO {
-  private UUID id;
+public record UpdateRestaurantDTO (
+    UUID id,
 
-  private String name;
+    String name,
 
-  private String email;
+    String email,
 
-  private String password;
+    String password,
 
-  private String cnpj;
+    String cnpj,
 
-  private String phone;
+    String phone,
 
-  private String address;
+    String address,
 
-  private String category;
+    String category,
 
-  private List<ProductDTO> menu = new ArrayList<>();
-}
+    List<ProductDTO> menu
+){}

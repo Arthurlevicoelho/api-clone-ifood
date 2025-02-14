@@ -53,9 +53,9 @@ public interface ProductMapper {
     }
     return complementDTOS.stream()
         .map(complementDTO -> Complement.builder()
-            .id(complementDTO.getId())
-            .name(complementDTO.getName())
-            .price(complementDTO.getPrice())
+            .id(complementDTO.id())
+            .name(complementDTO.name())
+            .price(complementDTO.price())
             .build()).toList();
   }
 

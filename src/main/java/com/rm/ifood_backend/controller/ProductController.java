@@ -4,8 +4,6 @@ import com.rm.ifood_backend.model.product.CreateProductDTO;
 import com.rm.ifood_backend.model.product.ProductResponseDTO;
 import com.rm.ifood_backend.model.product.UpdateProductDTO;
 import com.rm.ifood_backend.mapper.ProductMapper;
-import com.rm.ifood_backend.model.product.Product;
-import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping("/api/products")
-public class ProductController extends BaseController<Product, CreateProductDTO, UpdateProductDTO, ProductResponseDTO> {
+public class ProductController extends BaseController<CreateProductDTO, UpdateProductDTO, ProductResponseDTO> {
 
   @Autowired
   private ProductService productService;
@@ -23,22 +21,7 @@ public class ProductController extends BaseController<Product, CreateProductDTO,
   private final ProductMapper productMapper = ProductMapper.INSTANCE;
 
   @Override
-  protected ProductResponseDTO toResponseDto(Product product) {
-    return productMapper.toResponseDto(product);
-  }
-
-  @Override
-  protected Product toEntityFromCreateDto(CreateProductDTO createProductDTO) {
-    return productMapper.toEntityFromCreateDto(createProductDTO);
-  }
-
-  @Override
-  protected Product toEntityFromUpdateDto(UpdateProductDTO updateProductDTO) {
-    return productMapper.toEntityFromUpdateDto(updateProductDTO);
-  }
-
-  @Override
-  protected BaseService<Product> baseService() {
+  protected ProductService baseService() {
     return productService;
   }
 }

@@ -10,27 +10,23 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class UpdateClientDTO {
+public record UpdateClientDTO (
 
-  private UUID id;
+    UUID id,
 
-  private String name;
+    String name,
 
-  @Email(message = "Deve ser um email válido")
-  private String email;
+    @Email(message = "Deve ser um email válido")
+    String email,
 
-  @Pattern(regexp = "^(?=.*[^a-zA-Z0-9]).{8,}$", message = "Senha deve conter no mínimo 8 caracteres e 1 caractere especial")
-  private String password;
+    @Pattern(regexp = "^(?=.*[^a-zA-Z0-9]).{8,}$", message = "Senha deve conter no mínimo 8 caracteres e 1 caractere especial")
+    String password,
 
-  @Pattern(regexp = "^[0-9]{11}$", message = "CPF deve conter 11 números")
-  private String cpf;
+    @Pattern(regexp = "^[0-9]{11}$", message = "CPF deve conter 11 números")
+    String cpf,
 
-  private String address;
+    String address,
 
-  @Pattern(regexp = "^[0-9]{11}$", message = "Número de telefone deve conter 11 digitos, incluindo o DDD")
-  private String phone;
-}
+    @Pattern(regexp = "^[0-9]{11}$", message = "Número de telefone deve conter 11 digitos, incluindo o DDD")
+    String phone
+) { }
