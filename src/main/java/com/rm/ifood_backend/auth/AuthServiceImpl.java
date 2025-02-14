@@ -1,5 +1,6 @@
 package com.rm.ifood_backend.auth;
 
+import com.rm.ifood_backend.model.JwtResponseDTO;
 import com.rm.ifood_backend.model.LoginDTO;
 import com.rm.ifood_backend.model.client.ClientSignupDTO;
 import com.rm.ifood_backend.model.restaurant.RestaurantSignupDTO;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService{
@@ -69,10 +72,10 @@ public class AuthServiceImpl implements AuthService{
   }
 
   @Override
-  public String login(LoginDTO request) {
-    String email = request.getEmail();
-    String rawPassword = request.getPassword();
-    UserType userType = request.getUserType();
+  public JwtResponseDTO login(LoginDTO request) {
+    String email = request.email();
+    String rawPassword = request.password();
+    UserType userType = request.userType();
 
     switch (userType){
       case CLIENT -> {
@@ -81,7 +84,11 @@ public class AuthServiceImpl implements AuthService{
         if (!passwordEncoder.matches(rawPassword, client.getPassword())){
           throw new BadCredentialsException("Credenciais inválidas");
         }
-        return jwtUtil.generateToken(client.getEmail());
+
+        UUID id = client.getId();
+        String token = jwtUtil.generateToken(client.getEmail());
+
+        return new JwtResponseDTO(id, token);
       }
       case RESTAURANT -> {
         Restaurant restaurant = restaurantRepository.findByEmail(email)
@@ -89,7 +96,11 @@ public class AuthServiceImpl implements AuthService{
         if (!passwordEncoder.matches(rawPassword, restaurant.getPassword())) {
           throw new BadCredentialsException("Credenciais inválidas");
         }
-        return jwtUtil.generateToken(restaurant.getEmail());
+
+        UUID id = restaurant.getId();
+        String token = jwtUtil.generateToken(restaurant.getEmail());
+
+        return new JwtResponseDTO(id, token);
       }
       default -> throw new RuntimeException("Tipo de usuário desconhecido");
     }

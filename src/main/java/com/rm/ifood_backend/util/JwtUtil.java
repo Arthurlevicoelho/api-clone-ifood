@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
@@ -17,7 +18,7 @@ public class JwtUtil {
   @Value("${SECRET_KEY}")
   private String SECRET_KEY;
 
-  private final long EXPIRATION_TIME = 86400000;
+  private final long EXPIRATION_TIME = TimeUnit.DAYS.toMillis(7);
 
   private Key getSigningKey() {
     return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

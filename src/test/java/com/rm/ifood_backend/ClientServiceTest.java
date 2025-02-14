@@ -1,6 +1,7 @@
 package com.rm.ifood_backend;
 
 import com.rm.ifood_backend.model.client.Client;
+import com.rm.ifood_backend.model.client.UpdateClientDTO;
 import com.rm.ifood_backend.repository.ClientRepository;
 import com.rm.ifood_backend.service.ClientService;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,7 +32,7 @@ class ClientServiceTest {
 
   private Client client;
 
-  private Client clientUpdater;
+  private UpdateClientDTO clientUpdater;
 
   @BeforeEach
   void setUp() {
@@ -47,7 +48,7 @@ class ClientServiceTest {
         .phone("99123456789")
         .build();
 
-    clientUpdater = Client.builder()
+    clientUpdater = UpdateClientDTO.builder()
         .id(clientId)
         .name("TestUser Updated")
         .email("teste2@gmail.com")
