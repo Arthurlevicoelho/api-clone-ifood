@@ -42,7 +42,7 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<JwtResponseDTO> login(@Valid @RequestBody LoginDTO request) {
-    String token = authService.login(request);
-    return ResponseEntity.status(HttpStatus.CREATED).body(new JwtResponseDTO(token));
+    JwtResponseDTO response = authService.login(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 }
