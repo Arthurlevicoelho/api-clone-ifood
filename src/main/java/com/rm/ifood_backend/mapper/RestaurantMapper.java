@@ -54,28 +54,25 @@ public interface RestaurantMapper {
   }
 
   default ProductDTO toProductDto(Product product) {
-    return ProductDTO.builder()
-        .id(product.getId())
-        .restaurant_id(
-            product.getRestaurant() != null ?
-                product.getRestaurant().getId() : null
-        )
-        .name(product.getName())
-        .price(product.getPrice())
-        .description(product.getDescription())
-        .available(product.isAvailable())
-        .complements(mapComplementsToDto(product.getComplements()))
-        .build();
+    return new ProductDTO(
+        product.getId(),
+        product.getRestaurant().getId(),
+        product.getName(),
+        product.getDescription(),
+        product.getPrice(),
+        product.isAvailable(),
+        mapComplementsToDto(product.getComplements())
+    );
   }
 
   default Product toProductEntity(ProductDTO productDto) {
     return Product.builder()
-        .id(productDto.getId())
-        .name(productDto.getName())
-        .price(productDto.getPrice())
-        .description(productDto.getDescription())
-        .available(productDto.isAvailable())
-        .complements(mapComplementsFromDto(productDto.getComplements()))
+        .id(productDto.id())
+        .name(productDto.name())
+        .price(productDto.price())
+        .description(productDto.description())
+        .available(productDto.available())
+        .complements(mapComplementsFromDto(productDto.complements()))
         .build();
   }
 
@@ -86,9 +83,9 @@ public interface RestaurantMapper {
     }
     return complementDTOS.stream()
         .map(complementDTO -> Complement.builder()
-            .id(complementDTO.getId())
-            .name(complementDTO.getName())
-            .price(complementDTO.getPrice())
+            .id(complementDTO.id())
+            .name(complementDTO.name())
+            .price(complementDTO.price())
             .build()).toList();
   }
 

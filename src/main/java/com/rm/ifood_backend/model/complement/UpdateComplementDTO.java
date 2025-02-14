@@ -1,23 +1,17 @@
 package com.rm.ifood_backend.model.complement;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UpdateComplementDTO {
+public record UpdateComplementDTO (
 
-  @NotNull(message = "Id não deve ser nulo")
-  private UUID id;
+    @NotNull(message = "Id não deve ser nulo")
+    UUID id,
 
-  @NotNull(message = "Nome não deve ser nulo")
-  private String name;
+    @NotNull(message = "Nome não deve ser nulo")
+    String name,
 
-  @NotNull(message = "Preço não deve ser nulo")
-  private double price;
-}
+    @NotNull(message = "Preço não deve ser nulo")
+    double price
+){}

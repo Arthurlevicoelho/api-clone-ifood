@@ -1,22 +1,14 @@
 package com.rm.ifood_backend.model.complement;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ComplementResponseDTO {
+public record ComplementResponseDTO (
 
-  private UUID id;
+    UUID id,
 
-  private UUID product_id;
+    UUID product_id,
 
-  private String name;
+    String name,
 
-  private double price;
-
-}
+    double price
+){}

@@ -44,12 +44,12 @@ public class AuthServiceImpl implements AuthService{
   @Override
   public Client registerClient(ClientSignupDTO request){
     Client client = Client.builder()
-        .name(request.getName())
-        .email(request.getEmail())
-        .password(passwordEncoder.encode(request.getPassword()))
-        .cpf(request.getCpf())
-        .phone(request.getPhone())
-        .address(request.getAddress())
+        .name(request.name())
+        .email(request.email())
+        .password(passwordEncoder.encode(request.password()))
+        .cpf(request.cpf())
+        .phone(request.phone())
+        .address(request.address())
         .build();
     return clientRepository.save(client);
   }
@@ -57,13 +57,13 @@ public class AuthServiceImpl implements AuthService{
   @Override
   public Restaurant registerRestaurant(RestaurantSignupDTO request) {
     Restaurant restaurant = Restaurant.builder()
-        .name(request.getName())
-        .email(request.getEmail())
-        .password(passwordEncoder.encode(request.getPassword()))
-        .cnpj(request.getCnpj())
-        .category(request.getCategory())
-        .phone(request.getPhone())
-        .address(request.getAddress())
+        .name(request.name())
+        .email(request.email())
+        .password(passwordEncoder.encode(request.password()))
+        .cnpj(request.cnpj())
+        .category(request.category())
+        .phone(request.phone())
+        .address(request.address())
         .build();
     return restaurantRepository.save(restaurant);
   }

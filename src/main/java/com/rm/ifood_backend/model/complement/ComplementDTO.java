@@ -7,13 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class ComplementDTO {
+public record ComplementDTO (
 
-  private UUID id;
-  private String name;
-  private double price;
-}
+    UUID id,
+    String name,
+    double price
+){ }

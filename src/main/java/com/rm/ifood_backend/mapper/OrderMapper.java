@@ -71,38 +71,39 @@ public interface OrderMapper {
     return productDTOS.stream()
         .map(productDTO -> {
           Product product = new Product();
-          product.setId(productDTO.getId());
-          product.setName(productDTO.getName());
-          product.setDescription(productDTO.getDescription());
-          product.setPrice(productDTO.getPrice());
-          product.setAvailable(productDTO.isAvailable());
+          product.setId(productDTO.id());
+          product.setName(productDTO.name());
+          product.setDescription(productDTO.description());
+          product.setPrice(productDTO.price());
+          product.setAvailable(productDTO.available());
           product.setRestaurant(new Restaurant());
-          product.getRestaurant().setId(productDTO.getRestaurant_id());
+          product.getRestaurant().setId(productDTO.restaurant_id());
 
-          product.setComplements(productDTO.getComplements().stream()
+          product.setComplements(productDTO.complements().stream()
               .map(complementDTO -> {
                 Complement complement = new Complement();
-                complement.setId(complementDTO.getId());
-                complement.setName(complementDTO.getName());
-                complement.setPrice(complementDTO.getPrice());
+                complement.setId(complementDTO.id());
+                complement.setName(complementDTO.name());
+                complement.setPrice(complementDTO.price());
                 return complement;
               }).toList());
 
           return product;
         }).toList();
   }
+
   @Named("mapProductsToDto")
   default List<ProductDTO> mapProductsToDto(List<Product> products) {
     return products.stream()
-        .map(product -> ProductDTO.builder()
-            .id(product.getId())
-            .restaurant_id(product.getRestaurant() != null ? product.getRestaurant().getId() : null)
-            .name(product.getName())
-            .description(product.getDescription())
-            .price(product.getPrice())
-            .available(product.isAvailable())
-            .complements(mapComplementsToDto(product.getComplements()))
-            .build())
+        .map(product -> new ProductDTO(
+            product.getId(),
+            product.getRestaurant().getId(),
+            product.getName(),
+            product.getDescription(),
+            product.getPrice(),
+            product.isAvailable(),
+            mapComplementsToDto(product.getComplements())
+        ))
         .collect(Collectors.toList());
   }
 
@@ -113,9 +114,9 @@ public interface OrderMapper {
     }
     return complementDTOS.stream()
         .map(complementDTO -> Complement.builder()
-            .id(complementDTO.getId())
-            .name(complementDTO.getName())
-            .price(complementDTO.getPrice())
+            .id(complementDTO.id())
+            .name(complementDTO.name())
+            .price(complementDTO.price())
             .build()).toList();
   }
 

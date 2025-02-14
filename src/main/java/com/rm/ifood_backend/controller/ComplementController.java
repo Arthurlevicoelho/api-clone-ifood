@@ -1,12 +1,8 @@
 package com.rm.ifood_backend.controller;
 
-import com.rm.ifood_backend.mapper.ComplementMapper;
-import com.rm.ifood_backend.model.complement.Complement;
 import com.rm.ifood_backend.model.complement.ComplementResponseDTO;
 import com.rm.ifood_backend.model.complement.CreateComplementDTO;
 import com.rm.ifood_backend.model.complement.UpdateComplementDTO;
-import com.rm.ifood_backend.model.product.Product;
-import com.rm.ifood_backend.service.BaseService;
 import com.rm.ifood_backend.service.ComplementService;
 import com.rm.ifood_backend.service.ProductService;
 import com.rm.ifood_backend.util.ResponseBuilder;
@@ -26,7 +22,7 @@ import java.util.stream.Collectors;
 @Validated
 @RestController
 @RequestMapping("/api/products/{productId}/complements")
-public class ComplementController{
+public class ComplementController {
 
   @Autowired
   private ProductService productService;
@@ -34,28 +30,11 @@ public class ComplementController{
   @Autowired
   private ComplementService complementService;
 
-  private final ComplementMapper complementMapper = ComplementMapper.INSTANCE;
-
-  protected ComplementResponseDTO toResponseDto(Complement complement) {
-    return complementMapper.toResponseDto(complement);
-  }
-
-  protected Complement toEntityFromCreateDto(CreateComplementDTO createComplementDTO){
-    return complementMapper.toEntityFromCreateDto(createComplementDTO);
-  }
-
-  protected Complement toEntityFromUpdateDto(UpdateComplementDTO updateComplementDTO){
-    return complementMapper.toEntityFromUpdateDto(updateComplementDTO);
-  }
-
-  protected BaseService<Complement> baseService() { return complementService; }
-
   @GetMapping
   public ResponseEntity<Map<String, Object>> getAll(@PathVariable UUID productId) {
     List<ComplementResponseDTO> responseBody = complementService.getAll()
         .stream()
-        .filter(comp -> comp.getProduct().getId().equals(productId))
-        .map(this::toResponseDto)
+        .filter(comp -> comp.product_id().equals(productId))
         .collect(Collectors.toList());
     return ResponseBuilder.builder(HttpStatus.OK, "Lista de complementos obtida com sucesso", responseBody);
   }
@@ -63,27 +42,17 @@ public class ComplementController{
   @GetMapping("/{id}")
   public ResponseEntity<Map<String, Object>> findById(@PathVariable UUID productId,
                                                       @PathVariable UUID id) {
-    Complement complement = complementService.findById(id);
-    if (!complement.getProduct().getId().equals(productId)) {
+    ComplementResponseDTO response = complementService.findById(id);
+    if (!response.product_id().equals(productId)) {
       throw new EntityNotFoundException("Complemento não pertence ao produto informado.");
     }
-    ComplementResponseDTO response = toResponseDto(complement);
     return ResponseBuilder.builder(HttpStatus.OK, "Complemento encontrado", response);
   }
 
   @PostMapping
-  public ResponseEntity<Map<String, Object>> create(@PathVariable UUID productId,
-                                                    @Valid @RequestBody CreateComplementDTO createDTO) {
-    Product product = productService.findById(productId);
-
-    Complement complement = complementMapper.toEntityFromCreateDto(createDTO);
-
-    complement.setProduct(product);
-
-    Complement savedComplement = baseService().create(complement);
-
-    ComplementResponseDTO response = toResponseDto(savedComplement);
-
+  public ResponseEntity<Map<String, Object>> create(@PathVariable UUID productId,@Valid @RequestBody CreateComplementDTO createDTO) {
+    productService.findById(productId);
+    ComplementResponseDTO response = complementService.create(createDTO);
     return ResponseBuilder.builder(HttpStatus.CREATED, "Complemento criado com sucesso", response);
   }
 
@@ -92,27 +61,22 @@ public class ComplementController{
                                                     @PathVariable UUID id,
                                                     @Valid @RequestBody UpdateComplementDTO updateDTO) {
     productService.findById(productId);
-    Complement existingComplement = complementService.findById(id);
-    if (!existingComplement.getProduct().getId().equals(productId)) {
+    ComplementResponseDTO existing = complementService.findById(id);
+    if (!existing.product_id().equals(productId)) {
       throw new EntityNotFoundException("Complemento não pertence ao produto informado.");
     }
-    Complement complement = complementMapper.toEntityFromUpdateDto(updateDTO);
-    complement.setId(id);
-
-    complement.setProduct(existingComplement.getProduct());
-    Complement updatedComplement = baseService().update(id, complement);
-    ComplementResponseDTO response = toResponseDto(updatedComplement);
+    ComplementResponseDTO response = complementService.update(id, updateDTO);
     return ResponseBuilder.builder(HttpStatus.OK, "Complemento atualizado", response);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID productId,
                                                     @PathVariable UUID id) {
-    Complement complement = complementService.findById(id);
-    if (!complement.getProduct().getId().equals(productId)) {
+    ComplementResponseDTO existing = complementService.findById(id);
+    if (!existing.product_id().equals(productId)) {
       throw new EntityNotFoundException("Complemento não pertence ao produto informado.");
     }
-    baseService().delete(id);
+    complementService.delete(id);
     return ResponseBuilder.builder(HttpStatus.NO_CONTENT, "Complemento excluído", null);
   }
 }

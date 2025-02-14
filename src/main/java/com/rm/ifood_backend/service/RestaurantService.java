@@ -1,8 +1,11 @@
 package com.rm.ifood_backend.service;
 
+import com.rm.ifood_backend.mapper.RestaurantMapper;
+import com.rm.ifood_backend.model.restaurant.CreateRestaurantDTO;
 import com.rm.ifood_backend.model.restaurant.Restaurant;
+import com.rm.ifood_backend.model.restaurant.RestaurantResponseDTO;
+import com.rm.ifood_backend.model.restaurant.UpdateRestaurantDTO;
 import com.rm.ifood_backend.repository.RestaurantRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,7 +14,7 @@ import java.util.UUID;
 
 
 @Service
-public class RestaurantService extends BaseService<Restaurant> {
+public class RestaurantService extends BaseService<Restaurant, CreateRestaurantDTO, UpdateRestaurantDTO, RestaurantResponseDTO> {
 
   @Autowired
   private RestaurantRepository restaurantRepository;
@@ -24,20 +27,20 @@ public class RestaurantService extends BaseService<Restaurant> {
     return restaurantRepository;
   }
 
+  private final RestaurantMapper restaurantMapper = RestaurantMapper.INSTANCE;
+
   @Override
-  public Restaurant update(UUID id, Restaurant restaurant){
-    if (baseRepository().existsById(id)){
-      Restaurant entity = restaurantRepository.getReferenceById(id);
+  protected RestaurantResponseDTO toResponseDto(Restaurant restaurant) {
+    return restaurantMapper.toResponseDto(restaurant);
+  }
 
-      if (restaurant.getPassword() != null && !restaurant.getPassword().trim().isEmpty()) {
-        restaurant.setPassword(passwordEncoder.encode(restaurant.getPassword()));
-      } else {
-        restaurant.setPassword(entity.getPassword());
-      }
+  @Override
+  protected Restaurant toEntityFromCreateDto(CreateRestaurantDTO createDTO) {
+    return restaurantMapper.toEntityFromCreateDto(createDTO);
+  }
 
-      return baseRepository().save(restaurant);
-    } else{
-      throw new EntityNotFoundException("Entidade não encontrada.");
-    }
+  @Override
+  protected Restaurant toEntityFromUpdateDto(UpdateRestaurantDTO updateDTO) {
+    return restaurantMapper.toEntityFromUpdateDto(updateDTO);
   }
 }
