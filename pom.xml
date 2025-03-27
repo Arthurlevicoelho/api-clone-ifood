@@ -136,6 +136,9 @@
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
 				<version>9.0.9</version> <!-- Verifique a versão mais recente -->
+				<configuration>
+					<nvdApiKey>API_NVD_KEY</nvdApiKey> <!-- Adicione esta linha -->
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
