@@ -1,0 +1,39 @@
+name: security-api
+
+on:
+  push:
+      branches:
+        - develop
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+        # SAST
+      - name: Run FindSecBugs with Maven
+        run: mvn spotbugs:spotbugs -Dspotbugs.failOnError=false  
+
+        # SCA
+      - name: Run OWASP Dependency-Check
+        run: mvn dependency-check:check
+
+
+      - name: Notify telegram
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            O evento ${{ github.event_name }} realizou a pipeline ${{ github.workflow }}.
+            *Repositorio*: [${{ github.repository }}](${{ github.repo.url }})  
+            Quem realizou o commit: ${{ github.event.commits[0].author.name }}
+            Mensagem do commit: ${{ github.event.commits[0].message }}.
