@@ -112,6 +112,40 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.8.0.0</version>
+				<configuration>
+					<effort>Max</effort>
+					<threshold>Low</threshold>
+					<!-- Configuração para gerar SARIF -->
+					<outputFormat>sarif</outputFormat>
+					<outputFile>target/spotbugs.sarif</outputFile>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal> <!-- Executa a análise -->
+							<goal>spotbugs</goal> <!-- Gera o relatório -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>9.0.9</version> <!-- Verifique a versão mais recente -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.13.0</version>
