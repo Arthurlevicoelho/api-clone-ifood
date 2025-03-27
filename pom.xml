@@ -137,9 +137,7 @@
 				<artifactId>dependency-check-maven</artifactId>
 				<version>9.0.9</version> <!-- Verifique a versão mais recente -->
 				<configuration>
-					<!--suppress UnresolvedMavenProperty -->
-					<nvdApiKey> ${ API_NVD_KEY } </nvdApiKey>
-					<nvdApiDelay>5000</nvdApiDelay>
+					<nvdApiKey>061c1253-802e-473f-aa74-0118b5f93983</nvdApiKey>
 				</configuration>
 				<executions>
 					<execution>
