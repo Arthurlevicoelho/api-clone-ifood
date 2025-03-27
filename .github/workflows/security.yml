@@ -24,7 +24,7 @@ jobs:
 
         # SCA
       - name: Run OWASP Dependency-Check
-        run: mvn dependency-check:check
+        run: mvn dependency-check:check -Dnvd.api.key=${{ secrets.API_NVD_KEY }}
 
 
       - name: Notify telegram
