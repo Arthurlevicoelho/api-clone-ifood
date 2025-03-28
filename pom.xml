@@ -135,10 +135,7 @@
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
-				<version>9.0.9</version> <!-- Verifique a versão mais recente -->
-				<configuration>
-					<nvdApiKey>061c1253-802e-473f-aa74-0118b5f93983</nvdApiKey>
-				</configuration>
+				<version>12.1.0</version>
 				<executions>
 					<execution>
 						<goals>
