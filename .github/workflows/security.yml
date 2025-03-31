@@ -28,7 +28,7 @@ jobs:
           mvn spotbugs:spotbugs -Dspotbugs.failOnError=false
           if [ -f target/spotbugsXml.xml ]; then
             curl -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
-              -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
+              -H "Authorization: Token ${{ secrets.DEFECT_DOJO_API_KEY }}" \
               -H "accept: application/json" \
               -F "scan_type=SpotBugs Scan" \
               -F "file=@target/spotbugsXml.xml" \
