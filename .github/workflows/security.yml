@@ -39,13 +39,18 @@ jobs:
 
       # SCA - OWASP Dependency-Check
       - name: Run OWASP Dependency-Check
+        env:
+          DEFECTDOJO_TOKEN: ${{ secrets.DEFECTDOJO_API_KEY }} 
+          DEFECTDOJO_ENGAGEMENT_ID: ${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}
         run: |
           mvn dependency-check:check -Dformat=XML
           curl -v -X POST "${{ env.DEFECTDOJO_URL }}/api/v2/import-scan/" \
-            -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
+            -H "Authorization: Token $DEFECTDOJO_TOKEN" \
             -F "scan_type=Dependency Check Scan" \
             -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
-            -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
+            -F "engagement=$DEFECTDOJO_ENGAGEMENT_ID"
+
+        
 
       - name: Notify telegram
         uses: appleboy/telegram-action@master
