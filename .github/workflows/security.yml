@@ -52,6 +52,14 @@ jobs:
               -F "active=true"
           fi
 
+      - name: Upload to DefectDojo (Debug)
+        run: |
+         curl -v -X POST "${{ env.DEFECTDOJO_URL }}/api/v2/import-scan/" \
+           -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
+           -F "scan_type=Dependency Check Scan" \
+           -F "file=@target/dependency-check-report.xml" \
+           -F "engagement=1"
+
       - name: Notify telegram
         uses: appleboy/telegram-action@master
         with:
