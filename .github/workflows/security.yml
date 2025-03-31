@@ -2,8 +2,12 @@ name: security-api
 
 on:
   push:
-      branches:
-        - develop
+    branches:
+      - develop
+
+env:
+  DEFECTDOJO_URL: https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app
+  DEFECTDOJO_API_VERSION: v2
 
 jobs:
   security-scan:
@@ -18,14 +22,35 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-        # SAST
+      # SAST - FindSecBugs
       - name: Run FindSecBugs with Maven
-        run: mvn spotbugs:spotbugs -Dspotbugs.failOnError=false  
+        run: |
+          mvn spotbugs:spotbugs -Dspotbugs.failOnError=false
+          if [ -f target/spotbugsXml.xml ]; then
+            curl -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
+              -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
+              -H "accept: application/json" \
+              -F "scan_type=SpotBugs Scan" \
+              -F "file=@target/spotbugsXml.xml" \
+              -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
+              -F "verified=true" \
+              -F "active=true"
+          fi
 
-        # SCA
+      # SCA - OWASP Dependency-Check
       - name: Run OWASP Dependency-Check
-        run: mvn dependency-check:check -Dnvd.api.key=${{ secrets.API_NVD_KEY }}
-
+        run: |
+          mvn dependency-check:check
+          if [ -f target/dependency-check-report.xml ]; then
+            curl -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
+              -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
+              -H "accept: application/json" \
+              -F "scan_type=Dependency Check Scan" \
+              -F "file=@target/dependency-check-report.xml" \
+              -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
+              -F "verified=true" \
+              -F "active=true"
+          fi
 
       - name: Notify telegram
         uses: appleboy/telegram-action@master
@@ -37,4 +62,4 @@ jobs:
             *Repositorio*: [${{ github.repository }}](${{ github.repo.url }})  
             Quem realizou o commit: ${{ github.event.commits[0].author.name }}
             Mensagem do commit: ${{ github.event.commits[0].message }}.
-            teste 1
+            *Relatórios de segurança enviados para o DefectDojo*
