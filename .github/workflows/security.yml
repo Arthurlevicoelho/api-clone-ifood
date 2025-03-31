@@ -41,16 +41,11 @@ jobs:
       - name: Run OWASP Dependency-Check
         run: |
           mvn dependency-check:check
-          if [ -f target/dependency-check-report.xml ]; then
-            curl -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
-              -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
-              -H "accept: application/json" \
-              -F "scan_type=Dependency Check Scan" \
-              -F "file=@target/dependency-check-report.xml" \
-              -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
-              -F "verified=true" \
-              -F "active=true"
-          fi
+          curl -X POST "${{ env.DEFECTDOJO_URL }}/api/v2/import-scan/" \
+            -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
+            -F "scan_type=Dependency Check Scan" \
+            -F "file=@/home/runner/work/SEU_REPO/SEU_REPO/target/dependency-check-report.xml" \
+            -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
 
       - name: Notify telegram
         uses: appleboy/telegram-action@master
