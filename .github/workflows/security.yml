@@ -40,7 +40,7 @@ jobs:
       # SCA - OWASP Dependency-Check
       - name: Run OWASP Dependency-Check
         run: |
-          mvn dependency-check:check
+          mvn dependency-check:check -Dformat=XML
           curl -X POST "${{ env.DEFECTDOJO_URL }}/api/v2/import-scan/" \
             -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
             -F "scan_type=Dependency Check Scan" \
