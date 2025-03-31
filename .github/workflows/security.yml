@@ -45,7 +45,6 @@ jobs:
             -H "Authorization: Token ${{ secrets.DEFECTDOJO_API_KEY }}" \
             -F "scan_type=Dependency Check Scan" \
             -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
-           
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
 
       - name: Notify telegram
