@@ -8,6 +8,8 @@ on:
 env:
   DEFECTDOJO_URL: https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app
   DEFECTDOJO_API_VERSION: v2
+  DEFECTDOJO_TOKEN: ${{ secrets.DEFECTDOJO_API_KEY }} 
+  DEFECTDOJO_ENGAGEMENT_ID: ${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}
 
 jobs:
   security-scan:
@@ -27,28 +29,24 @@ jobs:
         run: |
           mvn spotbugs:spotbugs -Dspotbugs.failOnError=false
           if [ -f target/spotbugsXml.xml ]; then
-            curl -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
-              -H "Authorization: Token ${{ secrets.DEFECT_DOJO_API_KEY }}" \
-              -H "accept: application/json" \
+            curl -v -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
+              -H "Authorization: Token ${{ env.DEFECTDOJO_TOKEN }}" \
               -F "scan_type=SpotBugs Scan" \
               -F "file=@target/spotbugsXml.xml" \
-              -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
-              -F "verified=true" \
-              -F "active=true"
+              -F "product_name=api-clone-ifood" \
+              -F "engagement_name=Teste-Manual-$(date +%Y%m%d)" \
+              -F "auto_create_context=true"
           fi
 
       # SCA - OWASP Dependency-Check
-      - name: Run OWASP Dependency-Check
-        env:
-          DEFECTDOJO_TOKEN: ${{ secrets.DEFECTDOJO_API_KEY }} 
-          DEFECTDOJO_ENGAGEMENT_ID: ${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}
+      - name: Run OWASP Dependency-Check          
         run: |
           mvn dependency-check:check -Dformat=XML
           curl -v -X POST "${{ env.DEFECTDOJO_URL }}/api/v2/import-scan/" \
-            -H "Authorization: Token $DEFECTDOJO_TOKEN" \
+            -H "Authorization: Token ${{ env.DEFECTDOJO_TOKEN }}" \
             -F "scan_type=Dependency Check Scan" \
             -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
-            -F "engagement=$DEFECTDOJO_ENGAGEMENT_ID"
+            -F "engagement=${{ env.DEFECTDOJO_ENGAGEMENT_ID }}"
 
         
 
