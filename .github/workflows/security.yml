@@ -2,8 +2,12 @@ name: security-api
 
 on:
   push:
-      branches:
-        - develop
+    branches:
+      - develop
+
+env:
+  DEFECTDOJO_URL: https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app
+  DEFECTDOJO_API_VERSION: v2
 
 jobs:
   security-scan:
@@ -15,17 +19,49 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
-        # SAST
       - name: Run FindSecBugs with Maven
-        run: mvn spotbugs:spotbugs -Dspotbugs.failOnError=false  
+        run: |
+          mvn spotbugs:spotbugs \
+            -Dspotbugs.failOnError=false \
+            -Dspotbugs.xmlOutput=true \
+            -Dspotbugs.reportLevel=low \
+            -Dspotbugs.effort=Max \
+            -Dspotbugs.alwaysGenerateXml=true \
+            -Dspotbugs.onlyAnalyze=** \
+            -X
+      - name: Listar todos os arquivos dentro do target (recursivo)
+        run: |
+          echo "Arquivos no diretório target (recursivo):"
+          find ${{ github.workspace }}/target
 
-        # SCA
-      - name: Run OWASP Dependency-Check
-        run: mvn dependency-check:check -Dnvd.api.key=${{ secrets.API_NVD_KEY }}
+      - name: Listar arquivos dentro do target
+        run: |
+          echo "Arquivos no diretório target:"
+          ls -l ${{ github.workspace }}/target
 
+         
+      - name: Enviar relatório para API
+        run: |
+          curl -v -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
+            -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+            -F "scan_type=SpotBugs Scan" \
+            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target" \
+            -F "product_name=api-clone-ifood" \
+            -F "engagement_name=Teste-Manual-$(date +%Y%m%d)" \
+            -F "auto_create_context=true"
+
+      # SCA - OWASP Dependency-Check
+      # - name: Run OWASP Dependency-Check
+      #   run: |
+      #     mvn dependency-check:check -Dformat=XML
+      #     curl -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
+      #       -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+      #       -F "scan_type=Dependency Check Scan" \
+      #       -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
+      #       -F "engagement=1"
 
       - name: Notify telegram
         uses: appleboy/telegram-action@master
@@ -37,4 +73,4 @@ jobs:
             *Repositorio*: [${{ github.repository }}](${{ github.repo.url }})  
             Quem realizou o commit: ${{ github.event.commits[0].author.name }}
             Mensagem do commit: ${{ github.event.commits[0].message }}.
-            teste 1
+            *Relatórios de segurança enviados para o DefectDojo*
