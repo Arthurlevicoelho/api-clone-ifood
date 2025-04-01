@@ -30,54 +30,65 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run SpotBugs with Maven
+      - name: Prepare workspace
         run: |
-          # Configuração explícita do output directory
+          mkdir -p target
+          # Verifica se existem arquivos de filtro
+          if [ ! -f spotbugs-security-exclude.xml ]; then
+            echo "<FindBugsFilter></FindBugsFilter>" > spotbugs-security-exclude.xml
+          fi
+          if [ ! -f spotbugs-security-include.xml ]; then
+            echo "<FindBugsFilter></FindBugsFilter>" > spotbugs-security-include.xml
+          fi
+
+      - name: Run SpotBugs with explicit settings
+        run: |
           mvn spotbugs:spotbugs \
             -Dspotbugs.failOnError=false \
             -Dspotbugs.xmlOutput=true \
-            -Dspotbugs.outputDirectory=target/spotbugs \
-            -Dspotbugs.reportLevel=low \
+            -Dspotbugs.outputFile=${{ env.SPOTBUGS_REPORT_PATH }} \
             -Dspotbugs.effort=Max \
-            -Dspotbugs.pluginVersion=${{ env.SPOTBUGS_VERSION }} \
-            -Dspotbugs.includeTests=true \
-            -Dspotbugs.excludeFilterFile=.spotbugs-exclude.xml \
-            -X
+            -Dspotbugs.reportLevel=low \
+            -Dspotbugs.excludeFilterFile=spotbugs-security-exclude.xml \
+            -Dspotbugs.includeFilterFile=spotbugs-security-include.xml \
+            -Dproject.build.outputDirectory=target/classes \
+            -Dproject.build.testOutputDirectory=target/test-classes
 
-      - name: Verify SpotBugs report location
+      - name: Verify report generation
         run: |
-          echo "Conteúdo do diretório target/spotbugs:"
-          ls -la ${{ github.workspace }}/target/spotbugs || echo "Diretório não encontrado"
-          
-          echo "Buscando relatório em todo o workspace:"
-          find ${{ github.workspace }} -name "*spotbugs*" -o -name "*findbugs*"
+          echo "Conteúdo do diretório target:"
+          ls -la target/
+          echo "Verificando relatório em ${{ env.SPOTBUGS_REPORT_PATH }}"
+          if [ -f "${{ env.SPOTBUGS_REPORT_PATH }}" ]; then
+            echo "Relatório encontrado!"
+            cat ${{ env.SPOTBUGS_REPORT_PATH }} | head -n 20
+          else
+            echo "##[error]Relatório não encontrado!"
+            find . -name "*.xml" | grep -i "bug" || echo "Nenhum arquivo XML encontrado"
+          fi
 
-      - name: Process SpotBugs report
-        if: success() || failure()  # Executa mesmo se o passo anterior falhar
+      - name: Process SpotBugs findings
+        if: success() || failure()
         uses: jwgmeligmeyling/spotbugs-github-action@master
         with:
-          path: '**/spotbugsXml.xml'
+          path: ${{ env.SPOTBUGS_REPORT_PATH }}
           name: 'SpotBugs Report'
+          continue-on-warning: true
 
-      - name: Upload SpotBugs report to DefectDojo
+      - name: Upload to DefectDojo
+        if: always()
         run: |
-          # Tenta encontrar o relatório em vários locais possíveis
-          REPORT_PATH=$(find ${{ github.workspace }} -name "spotbugsXml.xml" -o -name "findbugsXml.xml" | head -1)
-          
-          if [ -f "$REPORT_PATH" ]; then
-            echo "Enviando relatório encontrado em: $REPORT_PATH"
+          if [ -f "${{ env.SPOTBUGS_REPORT_PATH }}" ]; then
+            echo "Enviando relatório para DefectDojo..."
             curl -v -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
               -H "Authorization: Token ${{ secrets.DEFECTDOJO_TOKEN }}" \
               -F "scan_type=SpotBugs Scan" \
-              -F "file=@$REPORT_PATH" \
+              -F "file=@${{ env.SPOTBUGS_REPORT_PATH }}" \
               -F "product_name=api-clone-ifood" \
               -F "engagement_name=Automated-Scan-$(date +%Y%m%d)" \
               -F "auto_create_context=true"
           else
-            echo "##[warning]Relatório SpotBugs não encontrado nos locais esperados"
-            echo "##[warning]Os locais verificados foram:"
-            find ${{ github.workspace }} -name "*spotbugs*" -o -name "*findbugs*"
-            # Não falha o job intencionalmente
+            echo "##[warning]Relatório SpotBugs não encontrado para upload"
           fi
 
          
