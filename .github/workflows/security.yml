@@ -25,33 +25,16 @@ jobs:
       # SAST - FindSecBugs
       - name: Run FindSecBugs with Maven
         run: |
-          mvn spotbugs:spotbugs -Dspotbugs.failOnError=false
-          REPORT_PATH=$(find . -name "spotbugsXml.xml" -print -quit)
-          # 3. Verifica se foi encontrado
-          if [ -z "$REPORT_PATH" ]; then
-            echo "❌ Relatório spotbugsXml.xml não encontrado!"
-            echo "Locais verificados:"
-            find . -type d | grep -i "target"
-            exit 1
-          else
-            echo "✅ Relatório encontrado em: $REPORT_PATH"
-            echo "Conteúdo do diretório:"
-            ls -la $(dirname "$REPORT_PATH")
-            
-            # 4. Mostra as primeiras linhas para verificação
-            echo -e "\nPrimeiras linhas do relatório:"
-            head -n 10 "$REPORT_PATH"
-            
-            # 5. Retorna o caminho absoluto
-            ABS_PATH=$(realpath "$REPORT_PATH")
-            echo -e "\nCaminho absoluto para uso:"
-            echo "$ABS_PATH"
-          fi
+          REPORT_PATH="./home/runner/work/api-clone-ifood/api-clone-ifood/target/spotbugs-report.xml"
+          mvn spotbugs:spotbugs \
+          -Dspotbugs.failOnError=false \
+          -Dspotbugs.xmlOutput=true \
+          -Dspotbugs.outputFile="$REPORT_PATH"
              curl -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
              -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
               -H "accept: application/json" \
               -F "scan_type=SpotBugs Scan" \
-              -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/spotbugsXml.xml" \
+              -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/spotbugs-report.xml" \
               -F "engagement=1" \
               -F "verified=true" \
               -F "active=true"
