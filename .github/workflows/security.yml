@@ -49,7 +49,7 @@ jobs:
           ls -la ${{ github.workspace }}/target
 
       - name: Process SpotBugs report
-        uses: jwgmeligmeyling/spotbugs-github-action@v1.1.0
+        uses: jwgmeligmeyling/spotbugs-github-action@master
         with:
           path: '**/spotbugsXml.xml'
           name: 'SpotBugs Report'
