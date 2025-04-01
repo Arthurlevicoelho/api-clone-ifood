@@ -53,7 +53,7 @@ jobs:
 
       - name: Process SpotBugs report
         if: success() || failure()  # Executa mesmo se o passo anterior falhar
-        uses: jwgmeligmeyling/spotbugs-github-action@v1.1.0
+        uses: jwgmeligmeyling/spotbugs-github-action@master
         with:
           path: '**/target/spotbugs/spotbugsXml.xml'
           name: 'SpotBugs Report'
