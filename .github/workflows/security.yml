@@ -22,12 +22,13 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-     # SAST - FindSecBugs
       - name: Run FindSecBugs with Maven
         run: |
           WORKSPACE="${{ github.workspace }}"
           REPORT_PATH="$WORKSPACE/target/spotbugsXml.xml"
+          echo "Criando diretório target..."
           mkdir -p "$WORKSPACE/target"
+          echo "Rodando SpotBugs..."
           mvn spotbugs:check spotbugs:spotbugs \
             -Dspotbugs.failOnError=false \
             -Dspotbugs.xmlOutput=true \
@@ -35,13 +36,25 @@ jobs:
             -Dspotbugs.includeFilterFile=<(echo '<FindBugsFilter></FindBugsFilter>') \
             -Dspotbugs.canGenerate=true \
             -X
-             curl -v -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
-              -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
-              -F "scan_type=SpotBugs Scan" \
-              -F "file=@target/spotbugsXml.xml" \
-              -F "product_name=api-clone-ifood" \
-              -F "engagement_name=Teste-Manual-$(date +%Y%m%d)" \
-              -F "auto_create_context=true"
+          echo "Verificando se o arquivo foi gerado..."
+          ls -l "$REPORT_PATH" || { echo "Arquivo não encontrado!"; exit 1; }
+          cat "$REPORT_PATH" || { echo "Erro ao ler o arquivo!"; exit 1; }
+      
+      - name: Upload SpotBugs XML como artefato (para depuração)
+        uses: actions/upload-artifact@v3
+        with:
+          name: spotbugs-report
+          path: target/spotbugsXml.xml
+      
+      - name: Enviar relatório para API
+        run: |
+          curl -v -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
+            -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+            -F "scan_type=SpotBugs Scan" \
+            -F "file=@target/spotbugsXml.xml" \
+            -F "product_name=api-clone-ifood" \
+            -F "engagement_name=Teste-Manual-$(date +%Y%m%d)" \
+            -F "auto_create_context=true"
 
       # SCA - OWASP Dependency-Check
       # - name: Run OWASP Dependency-Check
