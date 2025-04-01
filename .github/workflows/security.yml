@@ -75,6 +75,41 @@ jobs:
           name: 'SpotBugs Report'
           continue-on-warning: true
 
+
+      - name: Full recursive listing of target directory
+        run: |
+          echo "###########################################"
+          echo "## LISTAGEM COMPLETA DO DIRETÓRIO TARGET ##"
+          echo "###########################################"
+          echo ""
+          echo "Estrutura hierárquica completa:"
+          find target/ -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
+          
+          echo ""
+          echo "-------------------------------------------"
+          echo "Conteúdo detalhado:"
+          ls -Rla target/
+          
+          echo ""
+          echo "-------------------------------------------"
+          echo "Arquivos XML encontrados:"
+          find target/ -name "*.xml" -exec ls -la {} \;
+          
+          echo ""
+          echo "-------------------------------------------"
+          echo "Arquivos relacionados a SpotBugs:"
+          find target/ -name "*spotbugs*" -o -name "*findbugs*" -exec ls -la {} \; || echo "Nenhum arquivo encontrado"
+          
+          echo ""
+          echo "-------------------------------------------"
+          echo "Espaço utilizado:"
+          du -sh target/*
+          
+          echo ""
+          echo "-------------------------------------------"
+          echo "Arquivos mais recentes (últimos 5 modificados):"
+          find target/ -type f -printf "%T+ %p\n" | sort -r | head -n 5          
+
       - name: Upload to DefectDojo
         if: always()
         run: |
