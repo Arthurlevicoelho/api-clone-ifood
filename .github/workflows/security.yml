@@ -22,7 +22,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      SAST - FindSecBugs
+     # SAST - FindSecBugs
       - name: Run FindSecBugs with Maven
         run: |
           WORKSPACE="${{ github.workspace }}"
