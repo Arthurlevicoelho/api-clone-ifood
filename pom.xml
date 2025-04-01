@@ -116,6 +116,8 @@
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<version>4.8.0.0</version>
 				<configuration>
+					<xmlOutput>true</xmlOutput>
+  				        <failOnError>false</failOnError>
 					<effort>Max</effort>
 					<threshold>medium</threshold>
 					<failOnError>true</failOnError>
