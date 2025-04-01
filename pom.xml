@@ -116,8 +116,11 @@
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<version>4.8.0.0</version>
 				<configuration>
-					<includeFilterFile>spotbugs-security-include.xml</includeFilterFile>
-					<excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
+					<effort>Max</effort>
+					<threshold>medium</threshold>
+					<failOnError>true</failOnError>
+					<includeFilterFile>${session.executionRootDirectory}/spotbugs-security-include.xml</includeFilterFile>
+					<excludeFilterFile>${session.executionRootDirectory}/spotbugs-security-exclude.xml</excludeFilterFile>
 					<plugins>
 						<plugin>
 							<groupId>com.h3xstream.findsecbugs</groupId>
@@ -126,16 +129,7 @@
 						</plugin>
 					</plugins>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>verify</phase> <!-- Executa na fase verify -->
-						<goals>
-							<goal>check</goal> <!-- Usa o goal check que gera relatório -->
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
