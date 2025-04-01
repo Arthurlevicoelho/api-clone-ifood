@@ -41,7 +41,8 @@ jobs:
             -Dspotbugs.effort=Max \
             -Dspotbugs.pluginVersion=${{ env.SPOTBUGS_VERSION }} \
             -Dspotbugs.includeTests=true \
-            -Dspotbugs.excludeFilterFile=.spotbugs-exclude.xml
+            -Dspotbugs.excludeFilterFile=.spotbugs-exclude.xml \
+            -X
 
       - name: Verify SpotBugs report location
         run: |
