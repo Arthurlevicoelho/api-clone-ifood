@@ -40,12 +40,6 @@ jobs:
           ls -l "$REPORT_PATH" || { echo "Arquivo não encontrado!"; exit 1; }
           cat "$REPORT_PATH" || { echo "Erro ao ler o arquivo!"; exit 1; }
       
-      - name: Upload SpotBugs XML como artefato (para depuração)
-        uses: actions/upload-artifact@v3
-        with:
-          name: spotbugs-report
-          path: target/spotbugsXml.xml
-      
       - name: Enviar relatório para API
         run: |
           curl -v -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
