@@ -28,7 +28,7 @@ jobs:
           WORKSPACE="${{ github.workspace }}"
           REPORT_PATH="$WORKSPACE/target/spotbugsXml.xml"
           mkdir -p "$WORKSPACE/target"
-          mvn spotbugs:spotbugs \
+          mvn spotbugs:check spotbugs:spotbugs \
             -Dspotbugs.failOnError=false \
             -Dspotbugs.xmlOutput=true \
             -Dspotbugs.outputFile="$REPORT_PATH" \
