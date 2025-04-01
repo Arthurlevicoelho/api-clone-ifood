@@ -39,7 +39,7 @@ jobs:
              -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
               -H "accept: application/json" \
               -F "scan_type=SpotBugs Scan" \
-              -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/spotbugs-report.xml" \
+              -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/spotbugsXml.xml" \
               -F "engagement=1" \
               -F "verified=true" \
               -F "active=true"
