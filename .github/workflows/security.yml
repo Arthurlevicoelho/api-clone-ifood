@@ -26,7 +26,7 @@ jobs:
       - name: Run FindSecBugs with Maven
         run: |
           WORKSPACE="${{ github.workspace }}"
-          REPORT_PATH="$WORKSPACE/target/spotbugs-report.xml"
+          REPORT_PATH="$WORKSPACE/target/spotbugsXml.xml"
           mkdir -p "$WORKSPACE/target"
           mvn spotbugs:spotbugs \
             -Dspotbugs.failOnError=false \
