@@ -67,14 +67,6 @@ jobs:
             find . -name "*.xml" | grep -i "bug" || echo "Nenhum arquivo XML encontrado"
           fi
 
-      - name: Process SpotBugs findings
-        if: success() || failure()
-        uses: jwgmeligmeyling/spotbugs-github-action@master
-        with:
-          path: ${{ env.SPOTBUGS_REPORT_PATH }}
-          name: 'SpotBugs Report'
-          continue-on-warning: true
-
 
       - name: Full recursive listing of target directory
         run: |
@@ -108,7 +100,15 @@ jobs:
           echo ""
           echo "-------------------------------------------"
           echo "Arquivos mais recentes (últimos 5 modificados):"
-          find target/ -type f -printf "%T+ %p\n" | sort -r | head -n 5          
+          find target/ -type f -printf "%T+ %p\n" | sort -r | head -n 5   
+
+      - name: Process SpotBugs findings
+        if: success() || failure()
+        uses: jwgmeligmeyling/spotbugs-github-action@master
+        with:
+          path: ${{ env.SPOTBUGS_REPORT_PATH }}
+          name: 'SpotBugs Report'
+          continue-on-warning: true
 
       - name: Upload to DefectDojo
         if: always()
