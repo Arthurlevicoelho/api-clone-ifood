@@ -22,50 +22,33 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
 
       - name: Run SpotBugs with FindSecBugs
         uses: advanced-security/spotbugs-findsecbugs-action@v1
         with:
-          output-file: ${{ env.SPOTBUGS_REPORT_PATH }}
-          build-command: "mvn compile test-compile"
-          fail-on-error: false
-
-      - name: Verify report generation
-        run: |
-          echo "Conteúdo do diretório target:"
-          ls -la target/
-          echo "Verificando relatório em ${{ env.SPOTBUGS_REPORT_PATH }}"
-          if [ -f "${{ env.SPOTBUGS_REPORT_PATH }}" ]; then
-            echo "Relatório encontrado! Primeiras linhas:"
-            head -n 20 ${{ env.SPOTBUGS_REPORT_PATH }}
-          else
-            echo "##[error]Relatório não encontrado!"
-            find target/ -name "*.xml" | grep -i "bug" || echo "Nenhum arquivo XML encontrado"
-          fi
+          spotbugs_target: 'target/scala-2.13/classes'
+          build_command: 'mvn compile test-compile'
+          output_file: 'target/findsecbugs-report.xml'
+          fail_on_error: 'false'
+          spotbugs_version: '4.7.3'
+          findsecbugs_version: '1.12.0'
+          effort: 'max'
+          confidence: 'medium'
+          upload_sarif: 'true'
+          sarif_file: 'target/findsecbugs.sarif'
 
       - name: Upload to DefectDojo
         if: always()
         run: |
-          if [ -f "${{ env.SPOTBUGS_REPORT_PATH }}" ]; then
-            echo "Enviando relatório para DefectDojo..."
+          if [ -f "target/findsecbugs-report.xml" ]; then
             curl -v -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
               -H "Authorization: Token ${{ secrets.DEFECTDOJO_TOKEN }}" \
               -F "scan_type=SpotBugs Scan" \
-              -F "file=@${{ env.SPOTBUGS_REPORT_PATH }}" \
+              -F "file=@target/findsecbugs-report.xml" \
               -F "product_name=api-clone-ifood" \
               -F "engagement_name=Automated-Scan-$(date +%Y%m%d)" \
               -F "auto_create_context=true"
-          else
-            echo "##[warning]Relatório FindSecBugs não encontrado para upload"
           fi
-
          
       # - name: Enviar relatório para API
       #   run: |
