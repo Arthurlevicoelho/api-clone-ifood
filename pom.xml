@@ -111,27 +111,25 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.github.spotbugs</groupId>
-				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.8.0.0</version>
-				<configuration>
-					<xmlOutput>true</xmlOutput>
-  				        <failOnError>false</failOnError>
-					<effort>Max</effort>
-					<threshold>medium</threshold>
-					<failOnError>true</failOnError>
-					<includeFilterFile>${session.executionRootDirectory}/spotbugs-security-include.xml</includeFilterFile>
-					<excludeFilterFile>${session.executionRootDirectory}/spotbugs-security-exclude.xml</excludeFilterFile>
-					<plugins>
-						<plugin>
-							<groupId>com.h3xstream.findsecbugs</groupId>
-							<artifactId>findsecbugs-plugin</artifactId>
-							<version>1.12.0</version>
-						</plugin>
-					</plugins>
-				</configuration>
-			</plugin>
+		        <plugin>
+		            <groupId>org.codehaus.mojo</groupId>
+		            <artifactId>findbugs-maven-plugin</artifactId>
+		            <version>3.0.5</version>
+		            <dependencies>
+		                <dependency>
+		                    <groupId>com.h3xstream.findsecbugs</groupId>
+		                    <artifactId>findsecbugs-plugin</artifactId>
+		                    <version>1.12.0</version>
+		                </dependency>
+		            </dependencies>
+		            <executions>
+		                <execution>
+		                    <goals>
+		                        <goal>findbugs</goal>
+		                    </goals>
+		                </execution>
+		            </executions>
+		        </plugin>
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
