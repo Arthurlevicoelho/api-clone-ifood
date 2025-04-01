@@ -56,7 +56,7 @@ jobs:
         if: success() || failure()  # Executa mesmo se o passo anterior falhar
         uses: jwgmeligmeyling/spotbugs-github-action@master
         with:
-          path: '**/target/spotbugs/spotbugsXml.xml'
+          path: '**/spotbugsXml.xml'
           name: 'SpotBugs Report'
 
       - name: Upload SpotBugs report to DefectDojo
