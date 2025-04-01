@@ -116,17 +116,21 @@
 				<artifactId>spotbugs-maven-plugin</artifactId>
 				<version>4.8.0.0</version>
 				<configuration>
-					<effort>Max</effort>
-					<threshold>Low</threshold>
-					<!-- Configuração para gerar SARIF -->
-					<outputFormat>sarif</outputFormat>
-					<outputFile>target/spotbugs.sarif</outputFile>
+					<includeFilterFile>spotbugs-security-include.xml</includeFilterFile>
+					<excludeFilterFile>spotbugs-security-exclude.xml</excludeFilterFile>
+					<plugins>
+						<plugin>
+							<groupId>com.h3xstream.findsecbugs</groupId>
+							<artifactId>findsecbugs-plugin</artifactId>
+							<version>1.12.0</version>
+						</plugin>
+					</plugins>
 				</configuration>
 				<executions>
 					<execution>
+						<phase>verify</phase> <!-- Executa na fase verify -->
 						<goals>
-							<goal>check</goal> <!-- Executa a análise -->
-							<goal>spotbugs</goal> <!-- Gera o relatório -->
+							<goal>check</goal> <!-- Usa o goal check que gera relatório -->
 						</goals>
 					</execution>
 				</executions>
