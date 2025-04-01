@@ -30,29 +30,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Prepare workspace
-        run: |
-          mkdir -p target
-          # Verifica se existem arquivos de filtro
-          if [ ! -f spotbugs-security-exclude.xml ]; then
-            echo "<FindBugsFilter></FindBugsFilter>" > spotbugs-security-exclude.xml
-          fi
-          if [ ! -f spotbugs-security-include.xml ]; then
-            echo "<FindBugsFilter></FindBugsFilter>" > spotbugs-security-include.xml
-          fi
-
-      - name: Run SpotBugs with explicit settings
-        run: |
-          mvn spotbugs:spotbugs \
-            -Dspotbugs.failOnError=false \
-            -Dspotbugs.xmlOutput=true \
-            -Dspotbugs.outputFile=${{ env.SPOTBUGS_REPORT_PATH }} \
-            -Dspotbugs.effort=Max \
-            -Dspotbugs.reportLevel=low \
-            -Dspotbugs.excludeFilterFile=spotbugs-security-exclude.xml \
-            -Dspotbugs.includeFilterFile=spotbugs-security-include.xml \
-            -Dproject.build.outputDirectory=target/classes \
-            -Dproject.build.testOutputDirectory=target/test-classes
+      - name: Run SpotBugs with FindSecBugs
+        uses: advanced-security/spotbugs-findsecbugs-action@v1
+        with:
+          output-file: ${{ env.SPOTBUGS_REPORT_PATH }}
+          build-command: "mvn compile test-compile"
+          fail-on-error: false
 
       - name: Verify report generation
         run: |
@@ -60,55 +43,12 @@ jobs:
           ls -la target/
           echo "Verificando relatório em ${{ env.SPOTBUGS_REPORT_PATH }}"
           if [ -f "${{ env.SPOTBUGS_REPORT_PATH }}" ]; then
-            echo "Relatório encontrado!"
-            cat ${{ env.SPOTBUGS_REPORT_PATH }} | head -n 20
+            echo "Relatório encontrado! Primeiras linhas:"
+            head -n 20 ${{ env.SPOTBUGS_REPORT_PATH }}
           else
             echo "##[error]Relatório não encontrado!"
-            find . -name "*.xml" | grep -i "bug" || echo "Nenhum arquivo XML encontrado"
+            find target/ -name "*.xml" | grep -i "bug" || echo "Nenhum arquivo XML encontrado"
           fi
-
-
-      - name: Full recursive listing of target directory
-        run: |
-          echo "###########################################"
-          echo "## LISTAGEM COMPLETA DO DIRETÓRIO TARGET ##"
-          echo "###########################################"
-          echo ""
-          echo "Estrutura hierárquica completa:"
-          find target/ -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"
-          
-          echo ""
-          echo "-------------------------------------------"
-          echo "Conteúdo detalhado:"
-          ls -Rla target/
-          
-          echo ""
-          echo "-------------------------------------------"
-          echo "Arquivos XML encontrados:"
-          find target/ -name "*.xml" -exec ls -la {} \;
-          
-          echo ""
-          echo "-------------------------------------------"
-          echo "Arquivos relacionados a SpotBugs:"
-          find target/ -name "*spotbugs*" -o -name "*findbugs*" -exec ls -la {} \; || echo "Nenhum arquivo encontrado"
-          
-          echo ""
-          echo "-------------------------------------------"
-          echo "Espaço utilizado:"
-          du -sh target/*
-          
-          echo ""
-          echo "-------------------------------------------"
-          echo "Arquivos mais recentes (últimos 5 modificados):"
-          find target/ -type f -printf "%T+ %p\n" | sort -r | head -n 5   
-
-      - name: Process SpotBugs findings
-        if: success() || failure()
-        uses: jwgmeligmeyling/spotbugs-github-action@master
-        with:
-          path: ${{ env.SPOTBUGS_REPORT_PATH }}
-          name: 'SpotBugs Report'
-          continue-on-warning: true
 
       - name: Upload to DefectDojo
         if: always()
@@ -123,7 +63,7 @@ jobs:
               -F "engagement_name=Automated-Scan-$(date +%Y%m%d)" \
               -F "auto_create_context=true"
           else
-            echo "##[warning]Relatório SpotBugs não encontrado para upload"
+            echo "##[warning]Relatório FindSecBugs não encontrado para upload"
           fi
 
          
