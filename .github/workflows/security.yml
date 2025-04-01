@@ -23,48 +23,22 @@ jobs:
           distribution: 'temurin'
 
 
-      - name: Run SpotBugs with FindSecBugs
-        uses: advanced-security/spotbugs-findsecbugs-action@v1
-        with:
-          spotbugs_target: 'target/classes'
-          spotbugs_filename_glob: '*.jar'
-          upload_sarif: 'true'
-          no_cache: 'false'
-          spotbugs_version: '4.8.0.0'
-          findsecbugs_version: '1.12.0'
-          java_distribution: 'temurin'
-          java_version: '21'
-
-      - name: Upload SARIF to DefectDojo
-        if: always()
+      - name: Build e análise com FindSecBugs (Maven)
         run: |
-          if [ -f "target/spotbugs.sarif" ]; then
-            echo "##[info]Enviando relatório SARIF para DefectDojo..."
-            curl -v -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
-              -H "Authorization:  Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
-              -F "scan_type=SARIF" \
-              -F "file=@target/spotbugs.sarif" \
-              -F "product_name=api-clone-ifood" \
-              -F "engagement_name=Automated-Scan-$(date +%Y%m%d)" \
-              -F "auto_create_context=true" \
-              -F "close_old_findings=false" \
-              -F "scan_date=$(date +%Y-%m-%d)"
-          else
-            echo "##[warning]Relatório SARIF não encontrado"
-          fi
+          mvn clean verify findbugs:findbugs
+          cp target/findbugsXml.xml findbugs-report.xml
 
-      - name: Upload to DefectDojo
-        if: always()
+      - name: Enviar relatório para DefectDojo
         run: |
-          if [ -f "target/findsecbugs-report.xml" ]; then
-            curl -v -X POST "${{ env.DEFECTDOJO_URL }}/api/${{ env.DEFECTDOJO_API_VERSION }}/import-scan/" \
-              -H "Authorization: Token ${{ secrets.DEFECTDOJO_TOKEN }}" \
-              -F "scan_type=SARIF" \
-              -F "file=@target/findsecbugs-report.xml" \
-              -F "product_name=api-clone-ifood" \
-              -F "engagement_name=Automated-Scan-$(date +%Y%m%d)" \
-              -F "auto_create_context=true"
-          fi
+          curl -k -X POST "https://SEU_DEFECTDOJO/api/v2/import-scan/" \
+            -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+            -H "Content-Type: multipart/form-data" \
+            -F "scan_type=FindBugs Scan" \
+            -F "file=@findbugs-report.xml" \
+            -F "engagement=1" \
+            -F "test_type=1" \
+            -F "verified=True"
+
          
       # - name: Enviar relatório para API
       #   run: |
