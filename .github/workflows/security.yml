@@ -24,25 +24,14 @@ jobs:
 
       - name: Run FindSecBugs with Maven
         run: |
-          WORKSPACE="${{ github.workspace }}"
-          REPORT_PATH="$WORKSPACE/target/spotbugsXml.xml"
-          echo "Criando diretório target..."
-          mkdir -p "$WORKSPACE/target"
-          echo "Rodando SpotBugs..."
           mvn spotbugs:spotbugs \
             -Dspotbugs.failOnError=false \
             -Dspotbugs.xmlOutput=true \
-            -Dspotbugs.outputFile="$REPORT_PATH" \
-            -Dspotbugs.includeFilterFile=<(echo '<FindBugsFilter></FindBugsFilter>') \
             -Dspotbugs.reportLevel=low \
             -Dspotbugs.effort=Max \
             -Dspotbugs.alwaysGenerateXml=true \
             -Dspotbugs.onlyAnalyze=** \
             -X
-            
-          echo "Verificando se o arquivo foi gerado..."
-          ls -l "$REPORT_PATH" || { echo "Arquivo não encontrado!"; exit 1; }
-          cat "$REPORT_PATH" || { echo "Erro ao ler o arquivo!"; exit 1; }
 
          
       - name: Enviar relatório para API
