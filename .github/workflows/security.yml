@@ -25,6 +25,7 @@ jobs:
       # SAST - FindSecBugs
       - name: Run FindSecBugs with Maven
         run: |
+          mvn clean compile
           REPORT_PATH="./home/runner/work/api-clone-ifood/api-clone-ifood/target/spotbugs-report.xml"
           mvn spotbugs:spotbugs \
           -Dspotbugs.failOnError=false \
