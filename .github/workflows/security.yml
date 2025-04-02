@@ -8,6 +8,7 @@ on:
 env:
   DEFECTDOJO_URL: https://0123-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app
   SONARQUBE_URL: https://cf94-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app
+
   DEFECTDOJO_API_VERSION: v2
 
 jobs:
@@ -46,9 +47,31 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api-clone-ifood1234 -DskipTests -Dsonar.issuesReport.html.enable=true -Dsonar.issuesReport.xml.enable=true -X
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api-clone-ifood1234 -DskipTests -Dsonar.analysis.mode=preview -Dsonar.report.export.path=sonarqube-report.json
 
 
+      - name: Install sonar-report
+        run: pip install sonar-report
+
+      - name: Generate SonarQube report
+        run: |
+          sonar-report \
+            --sonar-url ${{ secrets.SONAR_HOST_URL }} \
+            --sonar-token ${{ secrets.SONAR_TOKEN }} \
+            --project-key ${{ secrets.SONARQUBE_PROJECT_KEY }} \
+            --format json \
+            --output sonarqube_report.json
+
+      - name: Import to DefectDojo
+        run: |
+          curl -k -X POST "https://0123-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app" \
+            -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+            -H "Content-Type: multipart/form-data" \
+            -F "scan_type=SonarQube Scan" \
+            -F "file=@sonarqube_report.json" \
+            -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
+            -F "verified=true" \
+            -F "active=true"
 
       - name: Enviar relatório para DefectDojo
         run: |
