@@ -44,10 +44,9 @@ jobs:
 
       - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api-clone-ifood1234 -DskipTests -Dsonar.analysis.mode=preview -Dsonar.report.export.path=sonarqube-report.json
+          SONAR_TOKEN: squ_f860547a0c595dda7fdc80fa9f7867714d1c3d55
+          SONAR_HOST_URL: https://cf94-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api-clone-ifood1234 -DskipTests
 
 
       - name: Install sonar-report
@@ -72,16 +71,6 @@ jobs:
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
             -F "verified=true" \
             -F "active=true"
-
-      - name: Enviar relatório para DefectDojo
-        run: |
-          curl -k -X POST "https://0123-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app" \
-            -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
-            -H "Content-Type: multipart/form-data" \
-            -F "scan_type=SonarQube Scan" \
-            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar/scanner-report.xml" \
-            -F "engagement=1" \
-            -F "verified=True"  
 
          
       # - name: Enviar relatório para API
