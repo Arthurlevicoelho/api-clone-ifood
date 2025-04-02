@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api-clone-ifood1234 -DskipTests -Dsonar.issuesReport.html.enable=true -Dsonar.issuesReport.xml.enable=true
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api-clone-ifood1234 -DskipTests -Dsonar.issuesReport.html.enable=true -Dsonar.issuesReport.xml.enable=true -X
 
 
 
@@ -56,9 +56,8 @@ jobs:
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
-            -F "file=@target/sonar-report.xml" \
+            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar/scanner-report.xml" \
             -F "engagement=1" \
-            -F "test_type=1" \
             -F "verified=True"  
 
          
