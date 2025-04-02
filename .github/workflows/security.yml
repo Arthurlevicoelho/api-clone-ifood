@@ -6,7 +6,8 @@ on:
       - develop
 
 env:
-  DEFECTDOJO_URL: https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app
+  DEFECTDOJO_URL: https://0123-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app
+  SONARQUBE_URL: https://cf94-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app
   DEFECTDOJO_API_VERSION: v2
 
 jobs:
@@ -23,21 +24,43 @@ jobs:
           distribution: 'temurin'
 
 
-      - name: Build e análise com FindSecBugs (Maven)
-        run: |
-          mvn clean verify findbugs:findbugs
-          cp target/findbugsXml.xml findbugs-report.xml
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=api-clone-ifood1234 \
+          -Dsonar.issuesReport.html.enable=true \
+          -Dsonar.issuesReport.xml.enable=true
 
       - name: Enviar relatório para DefectDojo
         run: |
-          curl -k -X POST "https://SEU_DEFECTDOJO/api/v2/import-scan/" \
+          curl -k -X POST "https://0123-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app" \
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
-            -F "scan_type=FindBugs Scan" \
-            -F "file=@findbugs-report.xml" \
+            -F "scan_type=SonarQube Scan" \
+            -F "file=@target/sonar-report.xml" \
             -F "engagement=1" \
             -F "test_type=1" \
-            -F "verified=True"
+            -F "verified=True"  
 
          
       # - name: Enviar relatório para API
