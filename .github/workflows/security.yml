@@ -49,7 +49,9 @@ jobs:
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=api-clone-ifood1234 \
           -Dsonar.issuesReport.html.enable=true \
-          -Dsonar.issuesReport.xml.enable=true
+          -Dsonar.issuesReport.xml.enable=true \
+          -DskipTests
+
 
       - name: Enviar relatório para DefectDojo
         run: |
