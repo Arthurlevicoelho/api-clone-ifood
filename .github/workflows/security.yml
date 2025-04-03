@@ -46,7 +46,7 @@ jobs:
 
 
       - name: SonarQube Scan
-        uses: javiertuya/sonarqube-action@main
+        usos: javiertuya/sonarqube-action@v1.4.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
