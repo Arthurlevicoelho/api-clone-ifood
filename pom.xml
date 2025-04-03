@@ -17,9 +17,9 @@
 		<java.version>21</java.version>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
-		<sonar.login>squ_f860547a0c595dda7fdc80fa9f7867714d1c3d55</sonar.login>
+		<sonar.login>sqp_724cc2448e2c0e98b6ecc408bba25fa79ec257e5</sonar.login>
 		<sonar.maven.plugin.version>3.7.0.1746</sonar.maven.plugin.version>
-		<sonar.host.url>https://f858-2804-29b8-5004-2d94-15a4-3176-ed6a-abfd.ngrok-free.app</sonar.host.url>
+		<sonar.host.url>https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app</sonar.host.url>
 	</properties>
 
 	<dependencies>
