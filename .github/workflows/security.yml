@@ -53,14 +53,12 @@ jobs:
 
       - name: Import to DefectDojo
         run: |
-          curl -k -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app " \
+          curl -k -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app" \
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
             -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json" \
-            -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
-            -F "verified=true" \
-            -F "active=true"
+            -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
 
          
       # - name: Enviar relatório para API
