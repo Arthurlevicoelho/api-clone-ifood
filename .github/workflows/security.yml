@@ -43,9 +43,10 @@ jobs:
 
       - name: Build and analyze
         env:
-          SONAR_TOKEN: squ_f860547a0c595dda7fdc80fa9f7867714d1c3d55
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: sqp_b180106318c7ddd3e91ca4c4942ec067daeb99ac
           SONAR_HOST_URL: https://0123-2804-29b8-5004-8382-35f9-b1bb-6f55-8de2.ngrok-free.app
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api-clone-ifood1234 -Dsonar.projectName='api-clone-ifood' -DskipTests
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api123 -DskipTests
 
 
       - name: Install sonar-report

@@ -17,7 +17,7 @@
 		<java.version>21</java.version>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
-		<sonar.login>sqa_cf6385cc0130ede4c92f7be919f225ebd519ad9f</sonar.login>
+		<sonar.login>squ_f860547a0c595dda7fdc80fa9f7867714d1c3d55</sonar.login>
 	</properties>
 
 	<dependencies>
