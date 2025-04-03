@@ -44,13 +44,13 @@ jobs:
           SONAR_HOST_URL: https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app
         run: mvn clean verify sonar:sonar -Ddependency-check.skip=true -Dsonar.projectKey=api-clone-ifood -Dsonar.host.url=https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app -Dsonar.login=sqp_724cc2448e2c0e98b6ecc408bba25fa79ec257e5 -DskipTests
 
+      - name: Install sonar-report
+        run: npm install -g sonar-report
 
-      - name: SonarQube Scan
-        usos: javiertuya/sonarqube-action@v1.4.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          restore-artifact-name1: "test-coverage-files"
+      - name: Generate SonarQube report
+        run: |
+          sonar-report --sonarurl=https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app --sonartoken=sqp_965d6f30293173257c62fa6ae84b1939de3f2cf8 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=sonar-report.json
+
 
       - name: Import to DefectDojo
         run: |
