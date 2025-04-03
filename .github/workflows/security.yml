@@ -28,14 +28,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api -DskipTests
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api -DskipTests
 
       - name: Install sonar-report
         run: npm install -g sonar-report
 
       - name: Generate SonarQube report
         run: |
-          sonar-report --sonarurl=${{ secrets.SONAR_HOST_URL }} --sonartoken=${{ secrets.SONAR_TOKEN }} --sonarcomponent=${{ secrets.SONARQUBE_PROJECT_KEY }} --project=api  --branch="main" --release="1.0.0" --output=target/sonarqube_report.json
+          sonar-report --sonarurl=${{ secrets.SONAR_HOST_URL }} --sonartoken=${{ secrets.SONAR_TOKEN }} --sonarcomponent=${{ secrets.SONARQUBE_PROJECT_KEY }} --project=api --branch=main --release=1.0.0 --save-report-json=sonar-report.json
+
 
       - name: Import to DefectDojo
         run: |
