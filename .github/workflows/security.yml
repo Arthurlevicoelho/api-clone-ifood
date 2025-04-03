@@ -35,12 +35,7 @@ jobs:
 
       - name: Generate SonarQube report
         run: |
-          sonar-report \
-            --sonar-url ${{ secrets.SONAR_HOST_URL }} \
-            --sonar-token ${{ secrets.SONAR_TOKEN }} \
-            --project-key ${{ secrets.SONARQUBE_PROJECT_KEY }} \
-            --format json \
-            --output sonarqube_report.json
+          sonar-report --sonar-url ${{ secrets.SONAR_HOST_URL }} --sonar-token ${{ secrets.SONAR_TOKEN }} --project-key ${{ secrets.SONARQUBE_PROJECT_KEY }} --format json --output sonarqube_report.json
 
       - name: Import to DefectDojo
         run: |
