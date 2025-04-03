@@ -57,7 +57,7 @@ jobs:
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
-            -F "file=@target/sonarqube_report.json" \
+            -F "file=@sonarqube_report.json" \
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
             -F "verified=true" \
             -F "active=true"
