@@ -23,19 +23,19 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-#      - name: Build and analyze
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-#        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api123 -DskipTests -Dsonar.issuesReport.html.enable=true -Dsonar.issuesReport.xml.enable=true
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api -DskipTests
 
       - name: Install sonar-report
         run: npm install -g sonar-report
 
       - name: Generate SonarQube report
         run: |
-          sonar-report --sonarurl=${{ secrets.SONAR_HOST_URL }} --sonartoken=${{ secrets.SONAR_TOKEN }} --sonarcomponent=${{ secrets.SONARQUBE_PROJECT_KEY }} --output sonarqube_report.json
+          sonar-report --sonarurl=${{ secrets.SONAR_HOST_URL }} --sonartoken=${{ secrets.SONAR_TOKEN }} --sonarcomponent=${{ secrets.SONARQUBE_PROJECT_KEY }} --project=api  --branch="main" --release="1.0.0" --output=target/sonarqube_report.json
 
       - name: Import to DefectDojo
         run: |
@@ -43,7 +43,7 @@ jobs:
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
-            -F "file=@sonarqube_report.json" \
+            -F "file=@target/sonarqube_report.json" \
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
             -F "verified=true" \
             -F "active=true"
