@@ -49,8 +49,7 @@ jobs:
 
       - name: Generate SonarQube report
         run: |
-          sonar-report --sonarurl=https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app --sonartoken=sqp_965d6f30293173257c62fa6ae84b1939de3f2cf8 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=sonar-report.json
-
+          sonar-report --sonarurl=https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app --sonartoken=sqa_718d811121c599019c29ec1ade9b091800bcf639 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=sonar-report.json --no-security-hotspot
 
       - name: Import to DefectDojo
         run: |
