@@ -6,8 +6,8 @@ on:
       - develop
 
 env:
-  DEFECTDOJO_URL: https://f918-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app
-  SONARQUBE_URL: https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app
+  DEFECTDOJO_URL: https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app
+  SONARQUBE_URL: https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app
   DEFECTDOJO_API_VERSION: v2
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app
+          SONAR_HOST_URL: https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app
         run: mvn clean verify sonar:sonar -Ddependency-check.skip=true -Dsonar.projectKey=api-clone-ifood -Dsonar.host.url=https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app -Dsonar.login=sqp_724cc2448e2c0e98b6ecc408bba25fa79ec257e5 -DskipTests
 
       - name: Install sonar-report
@@ -49,15 +49,15 @@ jobs:
 
       - name: Generate SonarQube report
         run: |
-          sonar-report --sonarurl=https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app --sonartoken=sqa_718d811121c599019c29ec1ade9b091800bcf639 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=sonar-report.json --no-security-hotspot
+          sonar-report --sonarurl=https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app --sonartoken=sqa_718d811121c599019c29ec1ade9b091800bcf639 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json --no-security-hotspot
 
       - name: Import to DefectDojo
         run: |
-          curl -k -X POST "https://f918-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app" \
+          curl -k -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app " \
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
-            -F "file=@sonarqube_report.json" \
+            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonarqube_report.json" \
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
             -F "verified=true" \
             -F "active=true"
