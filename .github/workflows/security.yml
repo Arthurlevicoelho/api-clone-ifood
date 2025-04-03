@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://f858-2804-29b8-5004-2d94-15a4-3176-ed6a-abfd.ngrok-free.app
-        run: mvn -B verify -Ddependency-check.skip=true org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api -DskipTests
+        run: mvn -B verify -Ddependency-check.skip=true org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api123 -DskipTests
 
       - name: Install sonar-report
         run: npm install -g sonar-report
