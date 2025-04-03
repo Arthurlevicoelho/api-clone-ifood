@@ -51,13 +51,22 @@ jobs:
         run: |
           sonar-report --sonarurl=https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app --sonartoken=sqa_718d811121c599019c29ec1ade9b091800bcf639 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json --no-security-hotspot
 
+      - name: Verificar se o relatório foi gerado
+        run: |
+          REPORT_PATH="/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json"
+          if [ -f "$REPORT_PATH" ]; then
+             echo "✅ O relatório do SonarQube foi gerado corretamente!"
+         else
+              echo "❌ ERRO: O relatório do SonarQube não foi encontrado!"
+              exit 1
+         fi
       - name: Import to DefectDojo
         run: |
           curl -k -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app " \
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
-            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonarqube_report.json" \
+            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json" \
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}" \
             -F "verified=true" \
             -F "active=true"
