@@ -23,21 +23,21 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-#      - name: Cache SonarQube packages
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/.sonar/cache
-#          key: ${{ runner.os }}-sonar
-#          restore-keys: ${{ runner.os }}-sonar
-#
-#      - name: Cache Maven packages
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: ${{ runner.os }}-m2
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
 
-      - name: Build and analyze
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and analyze SonarQube
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
         run: |
           sonar-report --sonarurl=https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app --sonartoken=sqa_718d811121c599019c29ec1ade9b091800bcf639 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json --no-security-hotspot
 
-      - name: Import to DefectDojo
+      - name: Import SonarQube to DefectDojo
         run: |
           curl -k -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app" \
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
@@ -59,27 +59,16 @@ jobs:
             -F "scan_type=SonarQube Scan" \
             -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json" \
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
-
+    
          
-      # - name: Enviar relatório para API
-      #   run: |
-      #     curl -v -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
-      #       -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
-      #       -F "scan_type=SpotBugs Scan" \
-      #       -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target" \
-      #       -F "product_name=api-clone-ifood" \
-      #       -F "engagement_name=Teste-Manual-$(date +%Y%m%d)" \
-      #       -F "auto_create_context=true"
-
-      # SCA - OWASP Dependency-Check
-      # - name: Run OWASP Dependency-Check
-      #   run: |
-      #     mvn dependency-check:check -Dformat=XML
-      #     curl -X POST "https://50cf-2804-29b8-5004-8382-b30e-9893-1b68-4d59.ngrok-free.app/api/v2/import-scan/" \
-      #       -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
-      #       -F "scan_type=Dependency Check Scan" \
-      #       -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
-      #       -F "engagement=1"
+      - name: Run OWASP Dependency-Check and Import to DefectDojo
+        run: |
+         mvn dependency-check:check -Dformat=XML
+         curl -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app/api/v2/import-scan/" \
+           -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+           -F "scan_type=Dependency Check Scan" \
+           -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
+           -F "engagement=1"
 
       - name: Notify telegram
         uses: appleboy/telegram-action@master
