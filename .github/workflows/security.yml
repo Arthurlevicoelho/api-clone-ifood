@@ -6,8 +6,8 @@ on:
       - develop
 
 env:
-  DEFECTDOJO_URL: https://691a-2804-29b8-5004-2d94-15a4-3176-ed6a-abfd.ngrok-free.app
-  SONARQUBE_URL: https://f858-2804-29b8-5004-2d94-15a4-3176-ed6a-abfd.ngrok-free.app
+  DEFECTDOJO_URL: https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app
+  SONARQUBE_URL: https://f918-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app
   DEFECTDOJO_API_VERSION: v2
 
 jobs:
@@ -41,8 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://f858-2804-29b8-5004-2d94-15a4-3176-ed6a-abfd.ngrok-free.app
-        run: mvn -B verify -Ddependency-check.skip=true org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api123 -DskipTests
+          SONAR_HOST_URL: https://f918-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app
+        run: mvn -B verify -Ddependency-check.skip=true org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=api -DskipTests
 
       - name: Install sonar-report
         run: npm install -g sonar-report
@@ -54,7 +54,7 @@ jobs:
 
       - name: Import to DefectDojo
         run: |
-          curl -k -X POST "https://691a-2804-29b8-5004-2d94-15a4-3176-ed6a-abfd.ngrok-free.app" \
+          curl -k -X POST "https://4683-2804-29b8-5004-2d94-465c-270-f6e3-df68.ngrok-free.app" \
             -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
