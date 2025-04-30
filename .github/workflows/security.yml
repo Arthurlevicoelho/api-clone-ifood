@@ -5,11 +5,6 @@ on:
     branches:
       - develop
 
-env:
-  DEFECTDOJO_URL: https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app
-  SONARQUBE_URL: https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app
-  DEFECTDOJO_API_VERSION: v2
-
 jobs:
   security-scan:
     runs-on: ubuntu-latest
@@ -41,34 +36,38 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app
-        run: mvn clean verify sonar:sonar -Ddependency-check.skip=true -Dsonar.projectKey=api-clone-ifood -Dsonar.host.url=https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app -Dsonar.login=sqp_724cc2448e2c0e98b6ecc408bba25fa79ec257e5 -DskipTests
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Ddependency-check.skip=true -Dsonar.projectKey=Arthurlevicoelho_api-clone-ifood_f8ea70ca-3c4d-4893-98ca-1b33ecb5eb3f -Dsonar.projectName='api-clone-ifood' -DskipTests=true
 
       - name: Install sonar-report
         run: npm install -g sonar-report
 
       - name: Generate SonarQube report
         run: |
-          sonar-report --sonarurl=https://c54d-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app --sonartoken=sqa_718d811121c599019c29ec1ade9b091800bcf639 --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json --no-security-hotspot
+          sonar-report --sonarurl=${{ secrets.SONAR_HOST_URL }} --sonartoken=${{ secrets.SONAR_TOKEN }} --sonarcomponent=api-clone-ifood --project=ifood-backend --branch=main --release=0.0.1-SNAPSHOT --save-report-json=/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json --no-security-hotspot
 
       - name: Import SonarQube to DefectDojo
         run: |
-          curl -k -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app" \
-            -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+          curl -k -X POST "${{ secrets.DEFECT_DOJO_URL }}" \
+            -H "Authorization: ${{ secrets.DEFECT_DOJO_API_KEY }}" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
             -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json" \
             -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
     
          
-      - name: Run OWASP Dependency-Check and Import to DefectDojo
+      - name: Run OWASP Dependency-Check
         run: |
          mvn dependency-check:check -Dformat=XML
-         curl -X POST "https://de13-2804-29b8-5004-2d94-4d4a-4f41-203a-3811.ngrok-free.app/api/v2/import-scan/" \
-           -H "Authorization: Token 6e482a959eefdd5e09dfe983f010a443c2616a74" \
+          
+
+      - name: Import to DefectDojo
+        run: |
+          curl -k -X POST "${{ secrets.DEFECT_DOJO_URL }}" \
+           -H "Authorization: ${{ secrets.DEFECT_DOJO_API_KEY }}" \
            -F "scan_type=Dependency Check Scan" \
            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
-           -F "engagement=1"
+           -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
 
       - name: Notify telegram
         uses: appleboy/telegram-action@master
