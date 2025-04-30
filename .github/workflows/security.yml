@@ -79,4 +79,4 @@ jobs:
             *Repositorio*: [${{ github.repository }}](${{ github.repo.url }})  
             Quem realizou o commit: ${{ github.event.commits[0].author.name }}
             Mensagem do commit: ${{ github.event.commits[0].message }}.
-            *Relatórios de segurança enviados para o DefectDojo*
+            * Relatórios de segurança enviados para o DefectDojo *
