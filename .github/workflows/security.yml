@@ -49,7 +49,7 @@ jobs:
       - name: Import SonarQube to DefectDojo
         run: |
           curl -k -X POST "${{ secrets.DEFECT_DOJO_URL }}" \
-            -H "Authorization: ${{ secrets.DEFECT_DOJO_API_KEY }}" \
+            -H "Authorization: Token ${{ secrets.DEFECT_DOJO_API_KEY }}" \
             -H "Content-Type: multipart/form-data" \
             -F "scan_type=SonarQube Scan" \
             -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/sonar-report.json" \
@@ -64,7 +64,7 @@ jobs:
       - name: Import to DefectDojo
         run: |
           curl -k -X POST "${{ secrets.DEFECT_DOJO_URL }}" \
-           -H "Authorization: ${{ secrets.DEFECT_DOJO_API_KEY }}" \
+            -H "Authorization: Token ${{ secrets.DEFECT_DOJO_API_KEY }}" \
            -F "scan_type=Dependency Check Scan" \
            -F "file=@/home/runner/work/api-clone-ifood/api-clone-ifood/target/dependency-check-report.xml" \
            -F "engagement=${{ secrets.DEFECTDOJO_ENGAGEMENT_ID }}"
